@@ -9,9 +9,17 @@ import javafx.scene.shape.StrokeType;
 public class Board {
 	public ArrayList<Circle> whitePieces = new ArrayList<Circle>();
 	public ArrayList<Circle> blackPieces = new ArrayList<Circle>();
+	public static enum PlaceOnBoardIs {free, whiteOccupied, blackOccupied, movable, notMovable}
+	public static PlaceOnBoardIs[] placeOnBoard = new PlaceOnBoardIs[26];
+	private int i;
 	
 	public Board() {
-		// Initialize black pieces,
+		//Set status for all play positions as free
+		for (i = 1; i <= 24; i++) {
+			placeOnBoard[i] = PlaceOnBoardIs.free;
+		}
+		
+		// Initialize black pieces
 		for (double layoutX = 0; layoutX <= 112.0; layoutX += 14.0) {
 			Circle circle = new Circle();
 

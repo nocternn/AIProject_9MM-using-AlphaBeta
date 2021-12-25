@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 
 public class Main extends Application{
 	private static Scene scene = null;
-	private Board board;
+	public static Board board = new Board();
 
 	public void start(Stage primaryStage) throws Exception {
 		Pane root = FXMLLoader.load(getClass().getResource("Board.fxml"));
@@ -23,7 +23,6 @@ public class Main extends Application{
 		Group blackPieces = (Group) scene.lookup("#blackPieces");
 		
 		// Data bind game pieces
-		board = new Board();
 		whitePieces.getChildren().setAll(FXCollections.observableList(board.whitePieces));
 		blackPieces.getChildren().setAll(FXCollections.observableList(board.blackPieces));
 	}
