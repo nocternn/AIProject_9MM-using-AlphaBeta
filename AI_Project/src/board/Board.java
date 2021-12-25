@@ -1,3 +1,4 @@
+package board;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -8,7 +9,8 @@ public class Board extends Application{
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("Board.fxml"));
         primaryStage.setTitle("Nine Men's Morris");
-        primaryStage.setScene(new Scene(root, 1200, 800));  //Width first, height second
+        Scene scene =  new Scene(root, 1200, 800);
+        primaryStage.setScene(scene);  //Width first, height second
         primaryStage.setResizable(false);
         primaryStage.show();
     }

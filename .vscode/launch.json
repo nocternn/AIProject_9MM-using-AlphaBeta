@@ -6,6 +6,14 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch Board",
+            "request": "launch",
+            "vmArgs": "--module-path F:/javafx-sdk-11.0.2/lib --add-modules javafx.controls,javafx.fxml",
+            "mainClass": "board.Board",
+            "projectName": "AI_Project"
+        },
+        {
+            "type": "java",
             "name": "Launch HelloDragAndDrop",
             "request": "launch",
             "vmArgs": "--module-path F:/javafx-sdk-11.0.2/lib --add-modules javafx.controls,javafx.fxml",
