@@ -13,29 +13,29 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="BoardController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <ImageView fitHeight="750.0" fitWidth="1000.0" layoutX="211.0" layoutY="81.0" onDragDetected="#handleDragDetect" onDragDone="#handleDragDone" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="750.0" fitWidth="1000.0" layoutX="25.0" layoutY="89.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@img/1024px-Nine_Men's_Morris_board.png" />
          </image>
       </ImageView>
-      <Group fx:id="whitePieces" layoutX="232.0" layoutY="132.0">
+      <Group layoutX="116.0" layoutY="132.0">
          <children>
-            <Circle fill="WHITE" radius="14.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3" />
-            <Circle fill="WHITE" layoutX="14.0" radius="14.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3" />
-            <Circle fill="WHITE" layoutX="28.0" radius="14.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3" />
-            <Circle fill="WHITE" layoutX="42.0" radius="14.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3" />
-            <Circle fill="WHITE" layoutX="56.0" radius="14.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3" />
-            <Circle fill="WHITE" layoutX="70.0" radius="14.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3" />
-            <Circle fill="WHITE" layoutX="84.0" radius="14.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3" />
-            <Circle fill="WHITE" layoutX="98.0" radius="14.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3" />
-            <Circle fill="WHITE" layoutX="112.0" radius="14.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3" />
+            <Circle id="white9" fill="WHITE" radius="14.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3" />
+            <Circle id="white8" fill="WHITE" layoutX="14.0" radius="14.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3" />
+            <Circle id="white7" fill="WHITE" layoutX="28.0" radius="14.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3" />
+            <Circle id="white6" fill="WHITE" layoutX="42.0" radius="14.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3" />
+            <Circle id="white5" fill="WHITE" layoutX="56.0" radius="14.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3" />
+            <Circle id="white4" fill="WHITE" layoutX="70.0" radius="14.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3" />
+            <Circle id="white3" fill="WHITE" layoutX="84.0" radius="14.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3" />
+            <Circle id="white2" fill="WHITE" layoutX="98.0" radius="14.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3" />
+            <Circle id="white1" fill="WHITE" layoutX="112.0" radius="14.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3" />
          </children>
       </Group>
-      <Group fx:id="blackPieces" layoutX="835.0" layoutY="132.0">
+      <Group layoutX="572.0" layoutY="132.0">
          <children>
-            <Circle radius="14.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3">
+            <Circle id="black1" radius="14.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3">
                <fill>
                   <LinearGradient endX="1.0" endY="1.0">
                      <stops>
@@ -53,7 +53,7 @@
                   </LinearGradient>
                </fill>
             </Circle>
-            <Circle layoutX="14.0" radius="14.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3">
+            <Circle id="black2" layoutX="14.0" radius="14.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3">
                <fill>
                   <LinearGradient endX="1.0" endY="1.0">
                      <stops>
@@ -71,7 +71,7 @@
                   </LinearGradient>
                </fill>
             </Circle>
-            <Circle layoutX="28.0" radius="14.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3">
+            <Circle id="black3" layoutX="28.0" radius="14.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3">
                <fill>
                   <LinearGradient endX="1.0" endY="1.0">
                      <stops>
@@ -89,7 +89,7 @@
                   </LinearGradient>
                </fill>
             </Circle>
-            <Circle layoutX="42.0" radius="14.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3">
+            <Circle id="black4" layoutX="42.0" radius="14.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3">
                <fill>
                   <LinearGradient endX="1.0" endY="1.0">
                      <stops>
@@ -107,7 +107,7 @@
                   </LinearGradient>
                </fill>
             </Circle>
-            <Circle layoutX="56.0" radius="14.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3">
+            <Circle id="black5" layoutX="56.0" radius="14.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3">
                <fill>
                   <LinearGradient endX="1.0" endY="1.0">
                      <stops>
@@ -125,7 +125,7 @@
                   </LinearGradient>
                </fill>
             </Circle>
-            <Circle layoutX="70.0" radius="14.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3">
+            <Circle id="black6" layoutX="70.0" radius="14.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3">
                <fill>
                   <LinearGradient endX="1.0" endY="1.0">
                      <stops>
@@ -143,7 +143,7 @@
                   </LinearGradient>
                </fill>
             </Circle>
-            <Circle layoutX="84.0" radius="14.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3">
+            <Circle id="black7" layoutX="84.0" radius="14.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3">
                <fill>
                   <LinearGradient endX="1.0" endY="1.0">
                      <stops>
@@ -161,7 +161,7 @@
                   </LinearGradient>
                </fill>
             </Circle>
-            <Circle layoutX="98.0" radius="14.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3">
+            <Circle id="black8" layoutX="98.0" radius="14.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3">
                <fill>
                   <LinearGradient endX="1.0" endY="1.0">
                      <stops>
@@ -179,7 +179,7 @@
                   </LinearGradient>
                </fill>
             </Circle>
-            <Circle layoutX="112.0" radius="14.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3">
+            <Circle id="black9" layoutX="112.0" radius="14.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3">
                <fill>
                   <LinearGradient endX="1.0" endY="1.0">
                      <stops>
@@ -199,40 +199,45 @@
             </Circle>
          </children>
       </Group>
-      <ChoiceBox fx:id="algoChoiceBox" layoutX="504.0" layoutY="70.0" prefHeight="28.0" prefWidth="165.0" style="-fx-background-color: #ffffff; -fx-border-color: #000000; -fx-border-width: 0.3;" />
-      <Label layoutX="545.0" layoutY="49.0" text="Algorithm">
+      <ChoiceBox fx:id="AlgoChoiceBox" layoutX="317.0" layoutY="104.0" prefHeight="28.0" prefWidth="165.0" style="-fx-background-color: #ffffff; -fx-border-color: #000000; -fx-border-width: 0.3;" />
+      <Label layoutX="317.0" layoutY="89.0" text="Algorithm">
          <font>
-            <Font name="Georgia" size="18.0" />
+            <Font name="Georgia" size="13.0" />
          </font>
       </Label>
-      <Group fx:id="boardPos" layoutX="272.0" layoutY="144.0">
+      <Label layoutX="172.0" layoutY="29.0" text="NINE MEN'S MORRIS">
+         <font>
+            <Font name="Georgia Bold" size="40.0" />
+         </font>
+      </Label>
+      <Group layoutX="86.0" layoutY="154.0">
          <children>
-            <StackPane fx:id="pos1" layoutX="2.0" prefHeight="28.0" prefWidth="28.0" />
-            <StackPane fx:id="pos2" layoutY="296.0" prefHeight="28.0" prefWidth="28.0" />
-            <StackPane fx:id="pos3" layoutY="596.0" prefHeight="28.0" prefWidth="28.0" />
-            <StackPane fx:id="pos4" layoutX="98.0" layoutY="99.0" prefHeight="28.0" prefWidth="28.0" />
-            <StackPane fx:id="pos5" layoutX="98.0" layoutY="296.0" prefHeight="28.0" prefWidth="28.0" />
-            <StackPane fx:id="pos7" layoutX="203.0" layoutY="200.0" prefHeight="28.0" prefWidth="28.0" />
-            <StackPane fx:id="pos8" layoutX="203.0" layoutY="296.0" prefHeight="28.0" prefWidth="28.0" />
-            <StackPane fx:id="pos9" layoutX="203.0" layoutY="397.0" prefHeight="28.0" prefWidth="28.0" />
-            <StackPane fx:id="pos10" layoutX="300.0" prefHeight="28.0" prefWidth="28.0" />
-            <StackPane fx:id="pos6" layoutX="98.0" layoutY="499.0" prefHeight="28.0" prefWidth="28.0" />
-            <StackPane fx:id="pos11" layoutX="300.0" layoutY="99.0" prefHeight="28.0" prefWidth="28.0" />
-            <StackPane fx:id="pos12" layoutX="300.0" layoutY="200.0" prefHeight="28.0" prefWidth="28.0" />
-            <StackPane fx:id="pos19" layoutX="502.0" layoutY="99.0" prefHeight="28.0" prefWidth="28.0" />
-            <StackPane fx:id="pos20" layoutX="502.0" layoutY="296.0" prefHeight="28.0" prefWidth="28.0" />
-            <StackPane fx:id="pos17" layoutX="403.0" layoutY="296.0" prefHeight="28.0" prefWidth="28.0" />
-            <StackPane fx:id="pos18" layoutX="403.0" layoutY="397.0" prefHeight="28.0" prefWidth="28.0" />
-            <StackPane fx:id="pos13" layoutX="300.0" layoutY="397.0" prefHeight="28.0" prefWidth="28.0" />
-            <StackPane fx:id="pos16" layoutX="403.0" layoutY="200.0" prefHeight="28.0" prefWidth="28.0" />
-            <StackPane fx:id="pos14" layoutX="300.0" layoutY="499.0" prefHeight="28.0" prefWidth="28.0" />
-            <StackPane fx:id="pos21" layoutX="502.0" layoutY="499.0" prefHeight="28.0" prefWidth="28.0" />
-            <StackPane fx:id="pos15" layoutX="300.0" layoutY="596.0" prefHeight="28.0" prefWidth="28.0" />
-            <StackPane fx:id="pos23" layoutX="600.0" layoutY="296.0" prefHeight="28.0" prefWidth="28.0" />
-            <StackPane fx:id="pos22" layoutX="600.0" prefHeight="28.0" prefWidth="28.0" />
-            <StackPane fx:id="pos24" layoutX="600.0" layoutY="596.0" prefHeight="28.0" prefWidth="28.0" />
+            <StackPane id="pos3_1" fx:id="pos1" layoutX="2.0" prefHeight="28.0" prefWidth="28.0" />
+            <StackPane id="pos3_4" fx:id="pos2" layoutY="296.0" prefHeight="28.0" prefWidth="28.0" />
+            <StackPane id="pos3_7" fx:id="pos3" layoutY="596.0" prefHeight="28.0" prefWidth="28.0" />
+            <StackPane id="pos2_1" fx:id="pos4" layoutX="98.0" layoutY="99.0" prefHeight="28.0" prefWidth="28.0" />
+            <StackPane id="pos2_4" fx:id="pos5" layoutX="98.0" layoutY="296.0" prefHeight="28.0" prefWidth="28.0" />
+            <StackPane id="pos1_1" fx:id="pos7" layoutX="203.0" layoutY="200.0" prefHeight="28.0" prefWidth="28.0" />
+            <StackPane id="pos1_4" fx:id="pos8" layoutX="203.0" layoutY="296.0" prefHeight="28.0" prefWidth="28.0" />
+            <StackPane id="pos1_7" fx:id="pos9" layoutX="203.0" layoutY="397.0" prefHeight="28.0" prefWidth="28.0" />
+            <StackPane id="pos3_2" fx:id="pos10" layoutX="300.0" prefHeight="28.0" prefWidth="28.0" />
+            <StackPane id="pos2_7" fx:id="pos6" layoutX="98.0" layoutY="499.0" prefHeight="28.0" prefWidth="28.0" />
+            <StackPane id="pos2_2" fx:id="pos11" layoutX="300.0" layoutY="99.0" prefHeight="28.0" prefWidth="28.0" />
+            <StackPane id="pos1_2" fx:id="pos12" layoutX="300.0" layoutY="200.0" prefHeight="28.0" prefWidth="28.0" />
+            <StackPane id="pos2_3" fx:id="pos19" layoutX="502.0" layoutY="99.0" prefHeight="28.0" prefWidth="28.0" />
+            <StackPane id="pos2_6" fx:id="pos20" layoutX="502.0" layoutY="296.0" prefHeight="28.0" prefWidth="28.0" />
+            <StackPane id="pos1_6" fx:id="pos17" layoutX="403.0" layoutY="296.0" prefHeight="28.0" prefWidth="28.0" />
+            <StackPane id="pos1_9" fx:id="pos18" layoutX="403.0" layoutY="397.0" prefHeight="28.0" prefWidth="28.0" />
+            <StackPane id="pos1_8" fx:id="pos13" layoutX="300.0" layoutY="397.0" prefHeight="28.0" prefWidth="28.0" />
+            <StackPane id="pos1_3" fx:id="pos16" layoutX="403.0" layoutY="200.0" prefHeight="28.0" prefWidth="28.0" />
+            <StackPane id="pos2_8" fx:id="pos14" layoutX="300.0" layoutY="499.0" prefHeight="28.0" prefWidth="28.0" />
+            <StackPane id="pos2_9" fx:id="pos21" layoutX="502.0" layoutY="499.0" prefHeight="28.0" prefWidth="28.0" />
+            <StackPane id="pos3_8" fx:id="pos15" layoutX="300.0" layoutY="596.0" prefHeight="28.0" prefWidth="28.0" />
+            <StackPane id="pos3_6" fx:id="pos23" layoutX="600.0" layoutY="296.0" prefHeight="28.0" prefWidth="28.0" />
+            <StackPane id="pos3_3" fx:id="pos22" layoutX="600.0" prefHeight="28.0" prefWidth="28.0" />
+            <StackPane id="pos3_9" fx:id="pos24" layoutX="600.0" layoutY="596.0" prefHeight="28.0" prefWidth="28.0" />
          </children>
       </Group>
-      <Circle fx:id="testPiece" fill="#2197ff" layoutX="182.0" layoutY="505.0" onDragDetected="#handleDragDetect" onDragDone="#handleDragDone" radius="14.0" stroke="BLACK" strokeType="INSIDE" />
+      <Circle fill="#2197ff" layoutX="46.0" layoutY="251.0" radius="14.0" stroke="BLACK" strokeType="INSIDE" />
    </children>
 </Pane>

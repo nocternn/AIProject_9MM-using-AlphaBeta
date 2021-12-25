@@ -1,0 +1,47 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch HelloDragAndDrop",
+            "request": "launch",
+            "vmArgs": "--module-path F:/javafx-sdk-11.0.2/lib --add-modules javafx.controls,javafx.fxml",
+            "mainClass": "HelloDragAndDrop",
+            "projectName": "AI_Project"
+        },
+        {
+            "type": "java",
+            "name": "Launch Current File",
+            "request": "launch",
+            "vmArgs": "--module-path F:/javafx-sdk-11.0.2/lib --add-modules javafx.controls,javafx.fxml",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Launch Board",
+            "request": "launch",
+            "vmArgs": "--module-path F:/javafx-sdk-11.0.2/lib --add-modules javafx.controls,javafx.fxml",
+            "mainClass": "Board",
+            "projectName": "AI_Project"
+        },
+        {
+            "type": "java",
+            "name": "Launch Main",
+            "request": "launch",
+            "vmArgs": "--module-path F:/javafx-sdk-11.0.2/lib --add-modules javafx.controls,javafx.fxml",
+            "mainClass": "Main",
+            "projectName": "AI_Project"
+        },
+        {
+            "type": "java",
+            "name": "Launch Css2Bin",
+            "request": "launch",
+            "vmArgs": "--module-path F:/javafx-sdk-11.0.2/lib --add-modules javafx.controls,javafx.fxml",
+            "mainClass": "com.sun.javafx.css.parser.Css2Bin",
+            "projectName": "AI_Project"
+        }
+    ]
+}
