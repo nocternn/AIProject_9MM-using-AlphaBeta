@@ -19,7 +19,7 @@ public class Main extends Application{
 		scene = new Scene(root, 1200, 800);
 		
 		primaryStage.setScene(scene);
-		primaryStage.setTitle("Nine Men's Morris - by J7Defender");
+		primaryStage.setTitle("Nine Men's Morris");
 		primaryStage.setResizable(false);
 		primaryStage.show();
 		

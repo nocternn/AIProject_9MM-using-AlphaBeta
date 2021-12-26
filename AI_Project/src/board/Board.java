@@ -15,12 +15,12 @@ public class Board {
 	
 	public Board() {
 		// Initialize black pieces,
-		for (double layoutX = 821.0; layoutX <= 821.0+14.0*9; layoutX += 14.0) {
+		for (double centerX = 821.0; centerX <= 821.0+14.0*9; centerX += 14.0) {
 			Circle circle = new Circle();
 
 			circle.setFill(Color.BLACK);
-			circle.setLayoutX(layoutX);
-            circle.setLayoutY(118);
+			circle.setCenterX(centerX);
+            circle.setCenterY(118);
 			circle.setRadius(14.0);
 			circle.setStroke(Color.WHITESMOKE);
 			circle.setStrokeType(StrokeType.INSIDE);
@@ -30,12 +30,12 @@ public class Board {
 		}
 		
 		// Initialize white pieces. Set drag and drop feature for white pieces.
-		for (double layoutX = 218.0; layoutX <= 218.0+14.0*9; layoutX += 14.0) {
+		for (double centerX = 218.0; centerX <= 218.0+14.0*9; centerX += 14.0) {
 			Circle circle = new Circle();
 			
 			circle.setFill(Color.WHITE);
-			circle.setLayoutX(layoutX);
-            circle.setLayoutY(118);
+			circle.setCenterX(centerX);
+            circle.setCenterY(118);
 			circle.setRadius(14.0);
 			circle.setStroke(Color.BLACK);
 			circle.setStrokeType(StrokeType.INSIDE);
@@ -62,16 +62,16 @@ public class Board {
     }
     public void handleMouseRelease(MouseEvent evt, Circle circle){
 		circle.setFill(Color.WHITE);
-        double releaseX = evt.getX() + circle.getLayoutX();
-        double releaseY = evt.getY() + circle.getLayoutY();
+        double releaseX = evt.getSceneX();
+        double releaseY = evt.getSceneY();
         System.out.println("Drop location: " + releaseX + " " + releaseY);
         for(int i=0;i<BoardController.boardPosition.size();i++){
-            double tempX = BoardController.boardPosition.get(i).getLayoutX();
-            double tempY = BoardController.boardPosition.get(i).getLayoutY();
-            if(releaseX >= tempX-30 && releaseX <= tempX+30 && releaseY >= tempY-30 && releaseY <= tempY+30){
-                circle.setLayoutX(tempX);
-                circle.setLayoutY(tempY);
-                System.out.println("Snapped to: " + i + " " + circle.getLayoutX() + " " +  circle.getLayoutY());
+            double tempX = BoardController.boardPosition.get(i).getCenterX();
+            double tempY = BoardController.boardPosition.get(i).getCenterY();
+            if(releaseX >= tempX-50 && releaseX <= tempX+50 && releaseY >= tempY-50 && releaseY <= tempY+50){
+                circle.setCenterX(tempX);
+                circle.setCenterY(tempY);
+                System.out.println("Snapped to: " + i + " " + circle.getCenterX() + " " +  circle.getCenterY());
                 for(int j=0;j<BoardController.boardPosition.size();j++) BoardController.boardPosition.get(j).setFill(Color.TRANSPARENT);
             }
         }
