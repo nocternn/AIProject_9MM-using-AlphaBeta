@@ -29,5 +29,8 @@ public class BoardController implements Initializable{
         algoChoiceBox.setItems(FXCollections.observableArrayList(st));
         
         Collections.addAll(boardPosition,pos1,pos2,pos3,pos4,pos5,pos6,pos7,pos8,pos9,pos10,pos11,pos12,pos13,pos14,pos15,pos16,pos17,pos18,pos19,pos20,pos21,pos22,pos23,pos24);
-    }    
+        for (int i=0;i<24;i++) {
+        	System.out.println(i + " " + boardPosition.get(i).getCenterX() + " " + boardPosition.get(i).getCenterY());
+        }
+    }
 }
