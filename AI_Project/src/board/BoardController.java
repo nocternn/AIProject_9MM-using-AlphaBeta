@@ -32,6 +32,17 @@ public class BoardController implements Initializable{
         boardPosition.add(new Piece(pos1.getLayoutX(), pos1.getLayoutY(), pos1.getRadius(), pos1));
         boardPosition.add(new Piece(pos2.getLayoutX(), pos2.getLayoutY(), pos2.getRadius(), pos2));
         boardPosition.add(new Piece(pos3.getLayoutX(), pos3.getLayoutY(), pos3.getRadius(), pos3));
+        boardPosition.add(new Piece(pos4.getLayoutX(), pos4.getLayoutY(), pos4.getRadius(), pos4));
+        boardPosition.add(new Piece(pos5.getLayoutX(), pos5.getLayoutY(), pos5.getRadius(), pos5));
+        boardPosition.add(new Piece(pos6.getLayoutX(), pos6.getLayoutY(), pos6.getRadius(), pos6));
+        boardPosition.add(new Piece(pos7.getLayoutX(), pos7.getLayoutY(), pos7.getRadius(), pos7));
+        boardPosition.add(new Piece(pos8.getLayoutX(), pos8.getLayoutY(), pos8.getRadius(), pos8));
+        boardPosition.add(new Piece(pos9.getLayoutX(), pos9.getLayoutY(), pos9.getRadius(), pos9));
+        boardPosition.add(new Piece(pos10.getLayoutX(), pos10.getLayoutY(), pos10.getRadius(), pos10));
+        boardPosition.add(new Piece(pos11.getLayoutX(), pos11.getLayoutY(), pos11.getRadius(), pos11));
+        boardPosition.add(new Piece(pos12.getLayoutX(), pos12.getLayoutY(), pos12.getRadius(), pos12));
+        boardPosition.add(new Piece(pos13.getLayoutX(), pos13.getLayoutY(), pos13.getRadius(), pos13));
+        boardPosition.add(new Piece(pos14.getLayoutX(), pos14.getLayoutY(), pos14.getRadius(), pos14));
 
         for(int i=0;i<9;i++){
             Circle piece = new Circle();
