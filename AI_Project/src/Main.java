@@ -1,31 +1,39 @@
+import java.util.ArrayList;
+
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
+
+import board.*;
 
 public class Main extends Application{
 	private static Scene scene = null;
 	private Board board;
 
 	public void start(Stage primaryStage) throws Exception {
-		Pane root = FXMLLoader.load(getClass().getResource("Board.fxml"));
-		scene = new Scene(root, 800, 800);
+		Pane root = FXMLLoader.load(getClass().getResource("board/Board.fxml"));
+		scene = new Scene(root, 1200, 800);
 		
 		primaryStage.setScene(scene);
 		primaryStage.setTitle("Nine Men's Morris - by J7Defender");
 		primaryStage.setResizable(false);
 		primaryStage.show();
 		
-		Group whitePieces = (Group) scene.lookup("#whitePieces");
-		Group blackPieces = (Group) scene.lookup("#blackPieces");
+		ArrayList<Circle> whitePieces = new ArrayList<Circle>();
+		ArrayList<Circle> blackPieces = new ArrayList<Circle>();
 		
 		// Data bind game pieces
 		board = new Board();
-		whitePieces.getChildren().setAll(FXCollections.observableList(board.whitePieces));
-		blackPieces.getChildren().setAll(FXCollections.observableList(board.blackPieces));
+		whitePieces.addAll(FXCollections.observableList(board.whitePieces));
+		blackPieces.addAll(FXCollections.observableList(board.blackPieces));
+		
+		Pane pane = (Pane) scene.lookup("#pane");
+		pane.getChildren().addAll(board.blackPieces);
+		pane.getChildren().addAll(board.whitePieces);
 	}
 	
 	public static void main(String[] args) {
