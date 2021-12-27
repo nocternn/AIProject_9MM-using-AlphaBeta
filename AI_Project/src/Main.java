@@ -8,7 +8,6 @@ import board.*;
 
 public class Main extends Application{
 	private static Scene scene = null;
-	private Board board;
 
 	public void start(Stage primaryStage) throws Exception {
 		Pane root = FXMLLoader.load(getClass().getResource("board/Board.fxml"));
@@ -20,11 +19,10 @@ public class Main extends Application{
 		primaryStage.show();
 		
 		// Data bind game pieces
-		board = new Board();
 		
 		Pane pane = (Pane) scene.lookup("#pane");
-		pane.getChildren().addAll(board.blackPieces);
-		pane.getChildren().addAll(board.whitePieces);
+		pane.getChildren().addAll(Board.blackPieces);
+		pane.getChildren().addAll(Board.whitePieces);
 	}
 	
 	public static void main(String[] args) {

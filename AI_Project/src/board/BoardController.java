@@ -25,7 +25,7 @@ public class BoardController implements Initializable{
        ArrayList<String> st = new ArrayList<>();
         st.add("Alpha-Beta, 2 moves ahead");
         st.add("Alpha-Beta, 5 moves ahead");
-        st.add("Alpha-Beta, 7 moves a head");
+        st.add("Alpha-Beta, 7 moves ahead");
         algoChoiceBox.setItems(FXCollections.observableArrayList(st));
         
         Collections.addAll(boardPosition,pos1,pos2,pos3,pos4,pos5,pos6,pos7,pos8,pos9,pos10,pos11,pos12,pos13,pos14,pos15,pos16,pos17,pos18,pos19,pos20,pos21,pos22,pos23,pos24);

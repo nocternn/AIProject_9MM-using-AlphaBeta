@@ -1,34 +1,36 @@
 package board;
 
-
-import java.util.ArrayList;
-
 import game.Game;
 import helper.MoveListener;
 import javafx.scene.paint.Color;
 
 public class Board implements MoveListener {
-	public ArrayList<Piece> whitePieces = new ArrayList<Piece>();
-	public ArrayList<Piece> blackPieces = new ArrayList<Piece>();
+	public static Piece[] whitePieces = new Piece[9];
+	public static Piece[] blackPieces = new Piece[9];
 	
 	private static Piece[] board = new Piece[24];
 	private static final int[][] possibleMills = {
-			{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}, {12, 13, 14}, {15, 16, 17}, {18, 19, 20}, {21, 22, 23},
+			{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}, {12, 13, 14}, {15, 16, 17}, {18, 19, 20}, {21, 22, 23}, 
 			{0, 9, 21}, {3, 10, 18}, {6, 11, 15}, {1, 4, 7}, {16, 19, 22}, {8, 12, 17}, {5, 13, 20}, {2, 14, 23}
-		};
+	};
+	public static final int[][] possibleSlides = {
+			{1, 9}, {0, 2, 4}, {1, 14}, {4, 10}, {1, 3, 5, 7}, {4, 13}, {7, 11}, {4, 6 ,8}, {7, 12}, {0, 10, 21},
+			{3, 9, 11, 18}, {6, 10, 15}, {8, 13, 17}, {5, 12, 14, 20}, {2, 13, 23}, {11, 16}, {15, 17, 19}, {12, 16},
+			{10, 19}, {16, 18, 20, 22}, {13, 19}, {9, 22}, {19, 21, 23}, {14 ,22}
+	}; //Adjacent play positions of piece[i]
 	
 	public Board() {
 		// Initialize black pieces.
 		int blackIndex = 0;
 		for (double centerX = 821.0; centerX < 821.0+14.0*9; centerX += 14.0) {
-			this.blackPieces.add(new Piece(Color.BLACK, centerX, 118, Color.WHITESMOKE, blackIndex, this));
+			Board.blackPieces[blackIndex] = new Piece(Color.BLACK, centerX, 118, Color.WHITESMOKE, blackIndex, this);
 			blackIndex++;
 		}
 		
 		// Initialize white pieces. Set drag and drop feature for white pieces.
 		int whiteIndex = 0;
 		for (double centerX = 218.0; centerX < 218.0+14.0*9; centerX += 14.0) {
-			this.whitePieces.add(new Piece(Color.WHITE, centerX, 118, Color.BLACK, whiteIndex, this));
+			Board.whitePieces[whiteIndex] = new Piece(Color.WHITE, centerX, 118, Color.BLACK, whiteIndex, this);
 			whiteIndex++;
 		}
 	}
@@ -40,15 +42,23 @@ public class Board implements MoveListener {
 			board[initialPosition] = null;
 		}
 		// Add piece at new position
-		board[newPosition] = this.whitePieces.get(pieceIndex);
+		board[newPosition] = Board.whitePieces[pieceIndex];
 		if (isMill(Color.WHITE, newPosition)) {
-			// TODO Implement taking a black piece from board in UI
+			// Implement taking a black piece from board in UI
 			System.out.println("White formed a mill");
 		}
 		// Black's turn to make a move
 		moveBlackPiece();
 		// Update game phase
 		Game.updateGamePhase();
+	}
+
+	public static Piece[] getWhitePieces() {
+		return whitePieces;
+	}
+
+	public static Piece[] getBlackPieces() {
+		return blackPieces;
 	}
 
 	public static int getNumberWhiteOnBoard() {
@@ -90,9 +100,9 @@ public class Board implements MoveListener {
 		int newPos = 0;
 		for (int i = 0; i < 24; i++)
 			if (board[i] == null) {
-				this.blackPieces.get(this.blackI).setCenterX(BoardController.boardPosition.get(i).getCenterX());
-				this.blackPieces.get(this.blackI).setCenterY(BoardController.boardPosition.get(i).getCenterY());
-				board[i] = this.blackPieces.get(this.blackI);
+				Board.blackPieces[this.blackI].setCenterX(BoardController.boardPosition.get(i).getCenterX());
+				Board.blackPieces[this.blackI].setCenterY(BoardController.boardPosition.get(i).getCenterY());
+				board[i] = Board.blackPieces[this.blackI];
 				this.blackI--;
 				newPos = i;
 				break;
