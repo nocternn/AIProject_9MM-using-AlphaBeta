@@ -14,6 +14,10 @@ public class Piece extends Circle {
     private int initialPosition = -1;
     private int index;
     
+    public Piece() {
+    	// Empty constructor
+    }
+    
     public Piece(Color fill, double x, double y, Color stroke, int index, MoveListener listener) {
 		this.setFill(fill);
 		this.setCenterX(x);
@@ -39,6 +43,10 @@ public class Piece extends Circle {
     	return this.index;
     }
     
+    public int getPosition() {
+    	return this.initialPosition;
+    }
+    
     public Color getColor() {
     	return (Color) this.getFill();
     }
@@ -62,6 +70,9 @@ public class Piece extends Circle {
             double tempY = BoardController.boardPosition.get(i).getCenterY();
             // If the piece was release close enough to a valid position then snap it to that position
             if(releaseX >= tempX-50 && releaseX <= tempX+50 && releaseY >= tempY-50 && releaseY <= tempY+50) {
+            	// If the closest position already holds a piece then skip
+            	if (Board.isOccupied(i))
+            		continue;
                 System.out.println("Snapped to: " + i + " " + tempX + " " +  tempY);
                 for(int j=0;j<BoardController.boardPosition.size();j++) BoardController.boardPosition.get(j).setFill(Color.TRANSPARENT);
                 // Notify listeners that a white piece has been moved
