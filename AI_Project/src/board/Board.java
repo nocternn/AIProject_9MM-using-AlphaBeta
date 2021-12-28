@@ -5,11 +5,7 @@ import helper.MoveListener;
 import javafx.scene.paint.Color;
 
 public class Board implements MoveListener {
-	public static Piece[] whitePieces = new Piece[9];
-	public static Piece[] blackPieces = new Piece[9];
-	
-	private static Piece[] board = new Piece[24];
-	private static final int[][] possibleMills = {
+	public static final int[][] possibleMills = {
 			{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}, {12, 13, 14}, {15, 16, 17}, {18, 19, 20}, {21, 22, 23}, 
 			{0, 9, 21}, {3, 10, 18}, {6, 11, 15}, {1, 4, 7}, {16, 19, 22}, {8, 12, 17}, {5, 13, 20}, {2, 14, 23}
 	};
@@ -19,18 +15,26 @@ public class Board implements MoveListener {
 			{10, 19}, {16, 18, 20, 22}, {13, 19}, {9, 22}, {19, 21, 23}, {14 ,22}
 	}; //Adjacent play positions of piece[i]
 	
+	private static Piece[] whitePieces = new Piece[9];
+	private static Piece[] blackPieces = new Piece[9];
+	private static Piece[] board = new Piece[24];
+	
 	public Board() {
+		initBoard();
+	}
+	
+	private void initBoard() {
 		// Initialize black pieces.
 		int blackIndex = 0;
 		for (double centerX = 821.0; centerX < 821.0+14.0*9; centerX += 14.0) {
-			Board.blackPieces[blackIndex] = new Piece(Color.BLACK, centerX, 118, Color.WHITESMOKE, blackIndex, this);
+			blackPieces[blackIndex] = new Piece(Color.BLACK, centerX, 118, Color.WHITESMOKE, blackIndex, this);
 			blackIndex++;
 		}
 		
 		// Initialize white pieces. Set drag and drop feature for white pieces.
 		int whiteIndex = 0;
 		for (double centerX = 218.0; centerX < 218.0+14.0*9; centerX += 14.0) {
-			Board.whitePieces[whiteIndex] = new Piece(Color.WHITE, centerX, 118, Color.BLACK, whiteIndex, this);
+			whitePieces[whiteIndex] = new Piece(Color.WHITE, centerX, 118, Color.BLACK, whiteIndex, this);
 			whiteIndex++;
 		}
 	}
@@ -42,7 +46,7 @@ public class Board implements MoveListener {
 			board[initialPosition] = null;
 		}
 		// Add piece at new position
-		board[newPosition] = Board.whitePieces[pieceIndex];
+		board[newPosition] = whitePieces[pieceIndex];
 		if (isMill(Color.WHITE, newPosition)) {
 			// Implement taking a black piece from board in UI
 			System.out.println("White formed a mill");
@@ -53,15 +57,15 @@ public class Board implements MoveListener {
 		Game.updateGamePhase();
 	}
 
-	public static Piece[] getWhitePieces() {
+	public Piece[] getWhitePieces() {
 		return whitePieces;
 	}
 
-	public static Piece[] getBlackPieces() {
+	public Piece[] getBlackPieces() {
 		return blackPieces;
 	}
 
-	public static int getNumberWhiteOnBoard() {
+	public int getNumberWhiteOnBoard() {
 		int count = 0;
 		for (Piece piece : board) {
 			if (piece != null && piece.getColor() == Color.WHITE)
@@ -70,7 +74,7 @@ public class Board implements MoveListener {
 		return count;
 	}
 
-	public static int getNumberBlackOnBoard() {
+	public int getNumberBlackOnBoard() {
 		int count = 0;
 		for (Piece piece : board) {
 			if (piece != null && piece.getColor() == Color.BLACK)

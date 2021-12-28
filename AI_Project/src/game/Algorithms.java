@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import board.Board;
 import board.Piece;
 import game.Game.GamePhase;
+import main.Main;
 
 public class Algorithms {
+	public Piece[] whitePieces = board.getWhitePieces();
+	public Piece[] blackPieces = board.getBlackPieces();
+
 	private static GamePhase currentGamePhase = Game.getCurrentPhase();
-	public Piece[] whitePieces = Board.getWhitePieces();
-	public Piece[] blackPieces = Board.getBlackPieces();
+	private static Board board = Main.getBoard();
 	private int Depth = 5; //constant depth (during development only)
 	private int nextMaxMove = -2; //Index of play position that will be the next move for the AI. FINAL RESULT
 	
@@ -16,7 +19,7 @@ public class Algorithms {
 		ArrayList<Move> possibleMoves = new ArrayList<Move>();
 		int eval = 0;
 		if (depth == 0) {
-			return Board.getNumberWhiteOnBoard() - Board.getNumberBlackOnBoard();
+			return board.getNumberWhiteOnBoard() - board.getNumberBlackOnBoard();
 			//After <depth> moves, check number of white vs black 
 		}
 		
