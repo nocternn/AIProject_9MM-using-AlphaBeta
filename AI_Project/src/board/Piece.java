@@ -13,6 +13,7 @@ public class Piece extends Circle {
     private double initialX, initialY;
     private int initialPosition = -1;
     private int index;
+    private boolean active = true; //Check if that piece is still available to play
     
     public Piece() {
     	// Empty constructor
@@ -37,6 +38,10 @@ public class Piece extends Circle {
 			this.setOnMouseDragged(evt -> handleMouseDrag(evt));
 			this.setOnMouseReleased(evt -> handleMouseRelease(evt));
 		}
+		
+		else {
+			this.setOnMouseClicked(evt -> handleMouseClicked(evt));
+		}
     }
     
     public int getIndex() {
@@ -50,6 +55,10 @@ public class Piece extends Circle {
     public Color getColor() {
     	return (Color) this.getFill();
     }
+    public void deletePiece() {
+    	this.active = false;
+    	this.setVisible(false);
+    }
     
 	//Drag and drop functions for white pieces
 	public void handleMousePress(MouseEvent evt){
@@ -58,7 +67,7 @@ public class Piece extends Circle {
     public void handleMouseDrag(MouseEvent evt){
     	this.setCenterX(evt.getX());
     	this.setCenterY(evt.getY());
-        for(int i=0;i<BoardController.boardPosition.size();i++) BoardController.boardPosition.get(i).setFill(Color.rgb(84, 255, 135));
+        for(int i=0;i<BoardController.boardPosition.size();i++) BoardController.boardPosition.get(i).setFill(Color.rgb(84, 255, 135));   
     }
     public void handleMouseRelease(MouseEvent evt){
     	this.setFill(Color.WHITE);
@@ -77,14 +86,24 @@ public class Piece extends Circle {
                 for(int j=0;j<BoardController.boardPosition.size();j++) BoardController.boardPosition.get(j).setFill(Color.TRANSPARENT);
                 // Notify listeners that a white piece has been moved
                 for (MoveListener listener : listeners)
-                	listener.movedWhitePiece(this.index, this.initialPosition, i);
+                	listener.moveWhitePiece(this.index, this.initialPosition, i);
                 // Set new piece origin
                 this.initialX = tempX;
                 this.initialY = tempY;
                 this.initialPosition = i;
             }
+            // If the position of the piece doesn't change after drag
+            else for(int j=0;j<BoardController.boardPosition.size();j++) BoardController.boardPosition.get(j).setFill(Color.TRANSPARENT);
         }
     	this.setCenterX(initialX);
     	this.setCenterY(initialY);
+    }
+    
+    //Click to delete
+    public void handleMouseClicked(MouseEvent evt) {
+    	this.deletePiece();
+    	// Unmark the pieces after delete
+		for (int i=0; i<24; i++)
+			BoardController.crossPosition.get(i).setVisible(false);
     }
 }

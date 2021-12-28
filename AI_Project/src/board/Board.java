@@ -34,7 +34,7 @@ public class Board implements MoveListener {
 	}
 
 	@Override
-	public void movedWhitePiece(int pieceIndex, int initialPosition, int newPosition) {
+	public void moveWhitePiece(int pieceIndex, int initialPosition, int newPosition) {
 		// Delete piece at old position
 		if (initialPosition >= 0) {
 			board[initialPosition] = null;
@@ -42,8 +42,10 @@ public class Board implements MoveListener {
 		// Add piece at new position
 		board[newPosition] = this.whitePieces.get(pieceIndex);
 		if (isMill(Color.WHITE, newPosition)) {
-			// TODO Implement taking a black piece from board in UI
 			System.out.println("White formed a mill");
+			BoardController.millStatus.setVisible(true);
+			markBlackPiece();
+			BoardController.millStatus.setVisible(false);
 		}
 		// Black's turn to make a move
 		moveBlackPiece();
@@ -119,6 +121,16 @@ public class Board implements MoveListener {
 			return true; // Mill was found
 		}
 		return false; // No mill found
+	}
+	
+	public void markBlackPiece() {
+		// Mark erasable pieces
+		for (int i=0; i<24; i++) {
+			if (isOccupied(i) && board[i].getColor() == Color.BLACK && !isMill(Color.BLACK, i)) {
+				BoardController.crossPosition.get(i).setVisible(true);	
+				BoardController.crossPosition.get(i).toFront();	
+			}				
+		}
 	}
 
 	public static boolean isOccupied(int position) {
