@@ -1,9 +1,11 @@
 package game;
+
 import java.util.ArrayList;
 
 import board.Board;
 import board.Piece;
 import game.Game.GamePhase;
+import javafx.scene.paint.Color;
 import main.Main;
 
 public class Algorithms {
@@ -15,7 +17,7 @@ public class Algorithms {
 	private int Depth = 5; //constant depth (during development only)
 	private int nextMaxMove = -2; //Index of play position that will be the next move for the AI. FINAL RESULT
 	
-	public int MiniMax (int depth, boolean blackIsPlaying, int currentPosition) {
+	public int MiniMax (int depth, boolean blackIsPlaying, int currentPosition) { //currentPosition: Current position of playing that we choose
 		ArrayList<Move> possibleMoves = new ArrayList<Move>();
 		int eval = 0;
 		if (depth == 0) {
@@ -31,7 +33,14 @@ public class Algorithms {
 					possibleMoves = getPossibleMoves(whitePieces[i], i);
 			}
 			for (Move move: possibleMoves) {
+				//Move the piece to a possibleMove in the algorithm but not update the display
+				moveGhostPiece(Color.WHITE, move.index, move.from, move.to);
+				if (board.isMill(Color.WHITE, move.to)) {
+					//TODO Delete an opponent piece on board and update number of black pieces
+				}
 				minEval = Math.min(minEval, MiniMax(depth-1, !blackIsPlaying, move.to));
+				//Move it back
+				moveGhostPiece(Color.WHITE, move.index, move.to, move.from);
 			}
 			return minEval;
 		} else {
@@ -42,12 +51,19 @@ public class Algorithms {
 					possibleMoves = getPossibleMoves(whitePieces[i], i);
 			}
 			for (Move move: possibleMoves) {
+				//Move the piece to a possibleMove in the algorithm but not update the display
+				moveGhostPiece(Color.BLACK, move.index, move.from, move.to);
+				if (board.isMill(Color.BLACK, move.to)) {
+					//TODO Delete an opponent piece on board and update number of white pieces
+				}
 				eval = MiniMax(depth-1, !blackIsPlaying, move.to);
 				if (eval > maxEval) {
 					maxEval = eval;
 					if (depth == Depth)
 						nextMaxMove = move.to; //Record the final result: Next move for AI
 				}
+				//Move it back
+				moveGhostPiece(Color.BLACK, move.index, move.to, move.from);
 			}
 			return maxEval;
 		}
@@ -75,6 +91,12 @@ public class Algorithms {
 				break;
 		}
 		return possibleMoves;
+	}
+	
+	public void moveGhostPiece(Color color, int index, int from, int to) {
+		//Move the piece but in Algorithm only
+		Board.board[to] = Board.board[from];
+		Board.board[from] = null;
 	}
 	
 	public static void updateGamePhase(GamePhase gamePhase) {

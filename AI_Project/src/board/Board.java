@@ -17,7 +17,7 @@ public class Board implements MoveListener {
 	
 	private static Piece[] whitePieces = new Piece[9];
 	private static Piece[] blackPieces = new Piece[9];
-	private static Piece[] board = new Piece[24];
+	public static Piece[] board = new Piece[24];
 	
 	public Board() {
 		initBoard();
@@ -93,7 +93,7 @@ public class Board implements MoveListener {
 			movedToPosition = slideBlackPieceOnBoard();
 		}
 		if (isMill(Color.BLACK, movedToPosition)) {
-			// TODO Implement taking a white piece from board
+			// Implement taking a white piece from board
 			System.out.println("Black formed a mill");
 		}
 	}
@@ -119,7 +119,7 @@ public class Board implements MoveListener {
 		return 0;
 	}
 
-	private boolean isMill(Color player, int currentPosition) {
+	public boolean isMill(Color player, int currentPosition) {
 		for (int[] possibleMill : possibleMills) {
 			// If one of the positions in evaluated possible mill is empty then skip
 			if (board[possibleMill[0]] == null || board[possibleMill[1]] == null || board[possibleMill[2]] == null)
