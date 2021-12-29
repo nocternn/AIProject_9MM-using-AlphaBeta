@@ -44,7 +44,7 @@ public class Game {
 			break;
 		}
 		
-		Algorithms.updateGamePhase(currentPhase);
+		Algorithms.UpdateGamePhase(currentPhase);
 	}
 
 	private static void gameOver() {

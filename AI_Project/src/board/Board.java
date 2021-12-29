@@ -1,6 +1,8 @@
 package board;
 
+import game.Algorithms;
 import game.Game;
+import game.Move;
 import helper.MoveListener;
 import javafx.scene.paint.Color;
 
@@ -17,7 +19,7 @@ public class Board implements MoveListener {
 	
 	private static Piece[] whitePieces = new Piece[9];
 	private static Piece[] blackPieces = new Piece[9];
-	public static Piece[] board = new Piece[24];
+	public static Piece[] board = new Piece[27];
 	
 	public Board() {
 		initBoard();
@@ -51,8 +53,11 @@ public class Board implements MoveListener {
 			// Implement taking a black piece from board in UI
 			System.out.println("White formed a mill");
 		}
+		Algorithms algo = new Algorithms();
+		// Get next move of AI
+		Move nextMove = algo.GetMaxMove();
 		// Black's turn to make a move
-		moveBlackPiece();
+		moveBlackPiece(nextMove);
 		// Update game phase
 		Game.updateGamePhase();
 	}
@@ -83,7 +88,7 @@ public class Board implements MoveListener {
 		return count;
 	}
 	
-	private void moveBlackPiece() {
+	private void moveBlackPiece(Move move) {
 		int movedToPosition;
 		switch (Game.getCurrentPhase()) {
 		case Opening:
@@ -92,6 +97,7 @@ public class Board implements MoveListener {
 		default:
 			movedToPosition = slideBlackPieceOnBoard();
 		}
+		System.out.println(move.index + ": " + move.from + " -> " + move.to);
 		if (isMill(Color.BLACK, movedToPosition)) {
 			// Implement taking a white piece from board
 			System.out.println("Black formed a mill");

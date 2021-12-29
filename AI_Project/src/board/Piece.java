@@ -11,9 +11,9 @@ import javafx.scene.shape.StrokeType;
 public class Piece extends Circle {
     private ArrayList<MoveListener> listeners = new ArrayList<MoveListener>();
     private double initialX, initialY;
-    private int initialPosition = -1; // Current position on game board [0,23]
+    private int initialPosition = -1; // Current position on game board [0,23]. Start with 25 as "NOT ON BOARD" position
     private int index; // Index when generate pieces, stay constant for entire game
-    private boolean active = true; //Check if that piece is still available to play
+    private boolean active = true; // Check if that piece is still available to play
     
     public Piece() {
     	// Empty constructor
@@ -44,8 +44,16 @@ public class Piece extends Circle {
     	return this.index;
     }
     
+    public void setIndex(int index) {
+    	this.index = index;
+    }
+    
     public int getPosition() {
     	return this.initialPosition;
+    }
+    
+    public void setPosition(int initialPosition) {
+    	this.initialPosition = initialPosition;
     }
     
     public Color getColor() {
@@ -54,9 +62,13 @@ public class Piece extends Circle {
     
     public boolean getActive() {
     	return active;
-    }
+    }    
     
-    public void deletePiece() {
+    public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	public void deletePiece() {
     	this.active = false;
     }
     
