@@ -1,6 +1,9 @@
 package game;
 
 import board.Board;
+import board.BoardController;
+
+import javafx.scene.text.*;
 
 public class Game {
 	public enum GamePhase {Opening, Middle, Ending};
@@ -24,14 +27,28 @@ public class Game {
 				currentPhase = GamePhase.Ending;
 			break;
 		case Ending:
-			if (Board.getNumberWhiteOnBoard() < MIN_PIECES_ON_BOARD || Board.getNumberBlackOnBoard() < MIN_PIECES_ON_BOARD)
+			if (Board.getNumberWhiteOnBoard() < MIN_PIECES_ON_BOARD || Board.getNumberBlackOnBoard() < MIN_PIECES_ON_BOARD || Board.stepCnt >= 10)
 				gameOver();
 			break;
 		}
 	}
 
 	private static void gameOver() {
-		// TODO Show winner/draw screen
+		if(Board.stepCnt >= 10){
+			BoardController.gameResult = new Text(525, 470, "DRAW");
+			BoardController.gameResult.setFont(Font.font("Georgia", FontWeight.BOLD, 36));
+			BoardController.gameResult.setVisible(true);
+		}
+		else if(Board.getNumberWhiteOnBoard() < MIN_PIECES_ON_BOARD){
+			BoardController.gameResult = new Text(522, 440, "BLACK\n  WIN!");
+			BoardController.gameResult.setFont(Font.font("Georgia", FontWeight.BOLD, 36));
+			BoardController.gameResult.setVisible(true);
+		}
+		else{
+			BoardController.gameResult = new Text(519, 440, "WHITE\n   WIN!");
+			BoardController.gameResult.setFont(Font.font("Georgia", FontWeight.BOLD, 36));
+			BoardController.gameResult.setVisible(true);
+		}
 		System.out.println("Game is over~");
 	}
 }

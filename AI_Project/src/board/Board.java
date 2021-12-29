@@ -4,12 +4,14 @@ package board;
 import java.util.ArrayList;
 
 import game.Game;
+import game.Game.GamePhase;
 import helper.MoveListener;
 import javafx.scene.paint.Color;
 
 public class Board implements MoveListener {
 	public ArrayList<Piece> whitePieces = new ArrayList<Piece>();
 	public ArrayList<Piece> blackPieces = new ArrayList<Piece>();
+	public static int stepCnt=0;
 	
 	private static Piece[] board = new Piece[24];
 	private static final int[][] possibleMills = {
@@ -18,6 +20,7 @@ public class Board implements MoveListener {
 		};
 	
 	public Board() {
+		stepCnt = 0;
 		// Initialize black pieces.
 		int blackIndex = 0;
 		for (double centerX = 821.0; centerX < 821.0+14.0*9; centerX += 14.0) {
@@ -41,8 +44,10 @@ public class Board implements MoveListener {
 		}
 		// Add piece at new position
 		board[newPosition] = this.whitePieces.get(pieceIndex);
+		if(Game.getCurrentPhase() != GamePhase.Opening) stepCnt++;
 		if (isMill(Color.WHITE, newPosition)) {
 			// TODO Implement taking a black piece from board in UI
+			stepCnt = 0;
 			System.out.println("White formed a mill");
 		}
 		// Black's turn to make a move
@@ -77,6 +82,7 @@ public class Board implements MoveListener {
 			break;
 		default:
 			movedToPosition = slideBlackPieceOnBoard();
+			stepCnt++;
 		}
 		if (isMill(Color.BLACK, movedToPosition)) {
 			// TODO Implement taking a white piece from board
