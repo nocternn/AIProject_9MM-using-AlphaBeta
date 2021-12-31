@@ -39,9 +39,7 @@ public class Piece extends Circle {
 			this.setOnMouseReleased(evt -> handleMouseRelease(evt));
 		}
 		
-		else {
-			this.setOnMouseClicked(evt -> handleMouseClicked(evt));
-		}
+		else this.setOnMouseClicked(evt -> handleMouseClicked(evt));
     }
     
     public int getIndex() {
@@ -102,6 +100,8 @@ public class Piece extends Circle {
     //Click to delete
     public void handleMouseClicked(MouseEvent evt) {
     	this.deletePiece();
+    	System.out.println("Deleted a black piece");
+    	BoardController.stackPane.toFront();
     	// Unmark the pieces after delete
 		for (int i=0; i<24; i++)
 			BoardController.crossPosition.get(i).setVisible(false);

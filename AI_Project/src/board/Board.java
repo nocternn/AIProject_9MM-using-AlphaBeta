@@ -4,6 +4,7 @@ package board;
 import java.util.ArrayList;
 
 import game.Game;
+import game.Game.GamePhase;
 import helper.MoveListener;
 import javafx.scene.paint.Color;
 
@@ -41,6 +42,8 @@ public class Board implements MoveListener {
 		}
 		// Add piece at new position
 		board[newPosition] = this.whitePieces.get(pieceIndex);
+		if (Game.getCurrentPhase() == GamePhase.Opening)
+			BoardController.stackPane.toFront();
 		if (isMill(Color.WHITE, newPosition)) {
 			System.out.println("White formed a mill");
 			BoardController.millStatus.setVisible(true);
@@ -127,8 +130,9 @@ public class Board implements MoveListener {
 		// Mark erasable pieces
 		for (int i=0; i<24; i++) {
 			if (isOccupied(i) && board[i].getColor() == Color.BLACK && !isMill(Color.BLACK, i)) {
+				board[i].toFront();
 				BoardController.crossPosition.get(i).setVisible(true);	
-				BoardController.crossPosition.get(i).toFront();	
+				BoardController.crossPosition.get(i).toFront();
 			}				
 		}
 	}
