@@ -43,11 +43,9 @@ public class Game {
 				gameOver();
 			break;
 		}
-		
-		Algorithms.UpdateGamePhase(currentPhase);
 	}
 
-	private static void gameOver() {
+	public static void gameOver() {
 		// TODO Show winner/draw screen
 		System.out.println("Game is over~");
 	}

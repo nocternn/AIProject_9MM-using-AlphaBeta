@@ -25,6 +25,10 @@ public class Board implements MoveListener {
 		initBoard();
 	}
 	
+	public Piece[] getBoard() {
+		return board;
+	}
+	
 	private void initBoard() {
 		// Initialize black pieces.
 		int blackIndex = 0;
@@ -43,6 +47,7 @@ public class Board implements MoveListener {
 
 	@Override
 	public void movedWhitePiece(int pieceIndex, int initialPosition, int newPosition) {
+		
 		// Delete piece at old position
 		if (initialPosition >= 0) {
 			board[initialPosition] = null;
@@ -53,6 +58,22 @@ public class Board implements MoveListener {
 			// Implement taking a black piece from board in UI
 			System.out.println("White formed a mill");
 		}
+		
+		switch (Game.getCurrentPhase()) {
+		case Opening:
+			// TODO In opening phase, player can move a piece from outside play-board to anywhere that is not occupied
+			break;
+			
+		case Middle:
+            // TODO In middle phases, player can only move to adjacent points of a piece
+			break;
+			
+		case Ending:
+			// TODO In end phase, player can move a piece to anywhere that is not occupied
+			break;
+			
+	}
+		
 		Algorithms algo = new Algorithms();
 		// Get next move of AI
 		Move nextMove = algo.GetMaxMove();
@@ -89,40 +110,18 @@ public class Board implements MoveListener {
 	}
 	
 	private void moveBlackPiece(Move move) {
-		int movedToPosition;
-		switch (Game.getCurrentPhase()) {
-		case Opening:
-			movedToPosition = putBlackPieceOnBoard();
-			break;
-		default:
-			movedToPosition = slideBlackPieceOnBoard();
-		}
-		System.out.println(move.index + ": " + move.from + " -> " + move.to);
-		if (isMill(Color.BLACK, movedToPosition)) {
+		// Move black piece
+		board[move.to] = blackPieces[move.index];
+		if (move.from >= 0)
+			board[move.from] = null;
+		blackPieces[move.index].setPosition(move.to);
+		if (isMill(Color.BLACK, move.to)) {
 			// Implement taking a white piece from board
 			System.out.println("Black formed a mill");
 		}
-	}
-	
-	private int blackI = 8;
-	private int putBlackPieceOnBoard() {
-		// Temporary test code
-		int newPos = 0;
-		for (int i = 0; i < 24; i++)
-			if (board[i] == null) {
-				Board.blackPieces[this.blackI].setCenterX(BoardController.boardPosition.get(i).getCenterX());
-				Board.blackPieces[this.blackI].setCenterY(BoardController.boardPosition.get(i).getCenterY());
-				board[i] = Board.blackPieces[this.blackI];
-				this.blackI--;
-				newPos = i;
-				break;
-			}
-		return newPos;
-	}
-
-	private int slideBlackPieceOnBoard() {
-		System.out.println("Slide black piece");
-		return 0;
+		// Set location for pieces on UI
+		Board.blackPieces[move.index].setCenterX(BoardController.boardPosition.get(move.to).getCenterX());
+		Board.blackPieces[move.index].setCenterY(BoardController.boardPosition.get(move.to).getCenterY());
 	}
 
 	public boolean isMill(Color player, int currentPosition) {
