@@ -1,11 +1,12 @@
 package game;
 
 import board.Board;
+import board.Piece;
+import javafx.scene.paint.Color;
 import main.Main;
 
 public class Game {
 	public enum GamePhase {Opening, Middle, Ending};
-	public static final int MAX_PIECES_ON_BOARD = 9;
 	public static final int MIN_PIECES_ON_BOARD = 3;
 	public static int turnCounter = 0; //Count playing turns
 	
@@ -25,29 +26,30 @@ public class Game {
 		return currentPhase;
 	}
 	
-	public static void updateGamePhase() {
-		int numberWhite = board.getNumberWhiteOnBoard();
-		int numberBlack = board.getNumberBlackOnBoard();
+	public static void updateGamePhase(Piece[] gameboard, Piece[] white, Piece[] black) {
 		
 		switch (currentPhase) {
 		case Opening:
-			if (numberWhite == MAX_PIECES_ON_BOARD && numberBlack == MAX_PIECES_ON_BOARD)
+			if (board.checkAllPiecesOnBoard(white) && board.checkAllPiecesOnBoard(black))
 				currentPhase = GamePhase.Middle;
 			break;
 		case Middle:
-			if (numberWhite == MIN_PIECES_ON_BOARD && numberBlack == MIN_PIECES_ON_BOARD)
+			if (board.getNumberOfPiecesOnBoard(gameboard, Color.WHITE) == MIN_PIECES_ON_BOARD 
+					&& board.getNumberOfPiecesOnBoard(gameboard, Color.BLACK) == MIN_PIECES_ON_BOARD)
 				currentPhase = GamePhase.Ending;
+			else if (board.getNumberOfPiecesOnBoard(gameboard, Color.WHITE) < MIN_PIECES_ON_BOARD
+					|| board.getNumberOfPiecesOnBoard(gameboard, Color.BLACK) < MIN_PIECES_ON_BOARD)
+				gameOver();
 			break;
 		case Ending:
-			if (numberWhite < MIN_PIECES_ON_BOARD || numberBlack < MIN_PIECES_ON_BOARD)
+			if (board.getNumberOfPiecesOnBoard(gameboard, Color.WHITE) < MIN_PIECES_ON_BOARD
+					|| board.getNumberOfPiecesOnBoard(gameboard, Color.BLACK) < MIN_PIECES_ON_BOARD)
 				gameOver();
 			break;
 		}
-		
-		Algorithms.updateGamePhase(currentPhase);
 	}
 
-	private static void gameOver() {
+	public static void gameOver() {
 		// TODO Show winner/draw screen
 		System.out.println("Game is over~");
 	}

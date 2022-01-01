@@ -1,87 +1,166 @@
 package game;
-import java.util.ArrayList;
 
 import board.Board;
 import board.Piece;
-import game.Game.GamePhase;
+import javafx.scene.paint.Color;
 import main.Main;
 
 public class Algorithms {
-	public Piece[] whitePieces = board.getWhitePieces();
-	public Piece[] blackPieces = board.getBlackPieces();
-
-	private static GamePhase currentGamePhase = Game.getCurrentPhase();
-	private static Board board = Main.getBoard();
-	private int Depth = 5; //constant depth (during development only)
-	private int nextMaxMove = -2; //Index of play position that will be the next move for the AI. FINAL RESULT
+	public static final int MAX_PIECES_ON_BOARD = 9;
+	public static final int MIN_PIECES_ON_BOARD = 3;
 	
-	public int MiniMax (int depth, boolean blackIsPlaying, int currentPosition) {
-		ArrayList<Move> possibleMoves = new ArrayList<Move>();
-		int eval = 0;
+	private static Board board = Main.getBoard();
+	private static int Depth = 3; //EXPERIMENT: Algorithm only search to this constant depth
+	private Move nextMove;
+	
+	public Move getMove() {
+		// Get the next move for AI
+		nextMove = null;
+		// Get original values
+		Piece[] originalGameboard = board.getBoard();
+		Piece[] originalWhite = board.getWhitePieces();
+		Piece[] originalBlack = board.getBlackPieces();
+		// Declare copy arrays
+		Piece[] gameboard = new Piece[24];
+		Piece[] white = new Piece[9];
+		Piece[] black = new Piece[9];
+		// Copy values
+		for (int i = 0; i < 24; i++)
+			if (originalGameboard[i] != null)
+				gameboard[i] = originalGameboard[i].clone();
+		for (int i = 0; i < 9; i++) {
+			white[i] = originalWhite[i].clone();
+			black[i] = originalBlack[i].clone();
+		}
+		MiniMax(gameboard, white, black, Depth, Color.BLACK); // Algorithm only search for this constant of depth
+		return nextMove;
+	}
+	
+	private int evaluateBoard(Piece[] gameboard, Color player) {
+		if (player == Color.WHITE)
+			return board.countMill(gameboard, player);
+		else
+			return -board.countMill(gameboard, player);
+	}
+	
+	private int MiniMax(Piece[] gameboard, Piece[] white, Piece[] black, int depth, Color player) { // currentPosition: Current position of playing that we choose
 		if (depth == 0) {
-			return board.getNumberWhiteOnBoard() - board.getNumberBlackOnBoard();
-			//After <depth> moves, check number of white vs black 
+			return evaluateBoard(gameboard, player);
 		}
 		
-		if (blackIsPlaying == false) {
-			//If it is human turn, we find min value of possible moves 
-			int minEval = Integer.MAX_VALUE;
-			for (int i = 0; i < 9; i++) {
-				if (whitePieces[i].getActive())
-					possibleMoves = getPossibleMoves(whitePieces[i], i);
-			}
-			for (Move move: possibleMoves) {
-				minEval = Math.min(minEval, MiniMax(depth-1, !blackIsPlaying, move.to));
-			}
-			return minEval;
-		} else {
-			//If it is AI turn, we find max value of possible moves
+		if (player == Color.WHITE) {
+			// HUMAN TURN: find MIN value of possible moves
+			Color opponent = Color.BLACK;
 			int maxEval = Integer.MIN_VALUE;
-			for (int i = 0; i < 9; i++) {
-				if (blackPieces[i].getActive())
-					possibleMoves = getPossibleMoves(whitePieces[i], i);
-			}
-			for (Move move: possibleMoves) {
-				eval = MiniMax(depth-1, !blackIsPlaying, move.to);
-				if (eval > maxEval) {
-					maxEval = eval;
-					if (depth == Depth)
-						nextMaxMove = move.to; //Record the final result: Next move for AI
+			for (Move move: board.getPossibleMoves(gameboard, white)) {
+				// Move piece
+				// Remove piece from old position
+				if (move.piece.initialPosition >= 0)
+					gameboard[move.piece.initialPosition] = null;
+				// Set piece in new position
+				white[move.piece.getIndex()].initialPosition = move.newPositionOnBoard;
+				gameboard[move.newPositionOnBoard] = white[move.piece.getIndex()];
+				if (board.isMill(gameboard, player, move.newPositionOnBoard)) {
+					// Delete an opponent piece on board
+					int[] almostMill = board.findAlmostMill(gameboard, opponent);
+					if (almostMill != null) {
+						// If there exists some almost mill then delete one of its pieces
+						for (int position : almostMill) {
+							if (gameboard[position] != null) {
+								move.opponentPiece = gameboard[position];
+								move.opponentPiece.initialPosition = position;
+								black[move.opponentPiece.getIndex()].active = false;
+								gameboard[position] = null;
+								break;
+							}
+						}
+					} else {
+						// If there is no almost mill then delete the first piece found on board
+						for (int position = 0; position < 24; position++) {
+							if (gameboard[position] != null && !board.isMill(gameboard, opponent, position) && gameboard[position].getColor() == opponent) {
+								move.opponentPiece = gameboard[position];
+								move.opponentPiece.initialPosition = position;
+								black[move.opponentPiece.getIndex()].active = false;
+								gameboard[position] = null;
+								break;
+							}
+						}
+					}
+				}
+				// Opponent's turn
+				maxEval = Math.max(maxEval, MiniMax(gameboard.clone(), white.clone(), black.clone(), depth-1, opponent));
+				// Undo move
+				// Remove piece from old position
+				gameboard[move.newPositionOnBoard] = null;
+				// Set piece in new position
+				white[move.piece.getIndex()].initialPosition = move.piece.initialPosition;
+				if (move.piece.initialPosition >= 0)
+					gameboard[move.piece.initialPosition] = white[move.piece.getIndex()];
+				// Undo delete
+				if (move.opponentPiece != null) {
+					black[move.opponentPiece.getIndex()].active = true;
+					gameboard[move.opponentPiece.initialPosition] = move.opponentPiece;
 				}
 			}
 			return maxEval;
-		}
-	}
-	
-	public ArrayList<Move> getPossibleMoves(Piece piece, int index) {
-		//Get all of the possible next moves
-		ArrayList<Move> possibleMoves = new ArrayList<Move>();
-		switch (currentGamePhase) {
-			case Middle:
-				//Can only move to adjacent points of a piece
-				for (int pos: Board.possibleSlides[index]) {
-					if (!Board.isOccupied(Board.possibleSlides[index][pos])) {
-						possibleMoves.add(new Move(piece.getPosition(), Board.possibleSlides[index][pos], index));
+		} else {
+			// AI TURN: find MAX value of possible moves
+			Color opponent = Color.WHITE;
+			int minEval = Integer.MAX_VALUE;
+			for (Move move: board.getPossibleMoves(gameboard, black)) {
+				// Move piece
+				// Remove piece from old position
+				if (move.piece.initialPosition >= 0)
+					gameboard[move.piece.initialPosition] = null;
+				// Set piece in new position
+				white[move.piece.getIndex()].initialPosition = move.newPositionOnBoard;
+				gameboard[move.newPositionOnBoard] = white[move.piece.getIndex()];
+				// Back-up data
+				if (board.isMill(gameboard, player, move.newPositionOnBoard)) {
+					// Delete an opponent piece on board
+					int[] almostMill = board.findAlmostMill(gameboard, opponent);
+					if (almostMill != null) {
+						// If there exists some almost mill then delete one of its pieces
+						for (int position : almostMill) {
+							if (gameboard[position] != null) {
+								move.opponentPiece = gameboard[position];
+								black[move.opponentPiece.getIndex()].active = false;
+								gameboard[position] = null;
+								break;
+							}
+						}
+					} else {
+						// If there is no almost mill then delete the first piece found on board
+						for (int position = 0; position < 24; position++) {
+							if (gameboard[position] != null && !board.isMill(gameboard, opponent, position) && gameboard[position].getColor() == opponent) {
+								move.opponentPiece = gameboard[position];
+								black[move.opponentPiece.getIndex()].active = false;
+								gameboard[position] = null;
+								break;
+							}
+						}
 					}
 				}
-				break;
-				
-			default:
-				//In opening and end phase, player can move a piece to anywhere that is not occupied
-				for (int i = 0; i < 24; i++) {
-					if (!Board.isOccupied(i))
-						possibleMoves.add(new Move(piece.getPosition(), i, index));
+				// Opponent's turn
+				int eval = MiniMax(gameboard.clone(), white.clone(), black.clone(), depth-1, opponent);
+				if (depth == Depth && eval < minEval) {
+					this.nextMove = move;
 				}
-				break;
+				minEval = Math.min(minEval, eval);
+				// Undo move
+				// Remove piece from old position
+				gameboard[move.newPositionOnBoard] = null;
+				// Set piece in new position
+				white[move.piece.getIndex()].initialPosition = move.piece.initialPosition;
+				if (move.piece.initialPosition >= 0)
+					gameboard[move.piece.initialPosition] = white[move.piece.getIndex()];
+				// Undo delete
+				if (move.opponentPiece != null) {
+					black[move.opponentPiece.getIndex()].active = true;
+					gameboard[move.opponentPiece.initialPosition] = move.opponentPiece;
+				}
+			}
+			return minEval;
 		}
-		return possibleMoves;
-	}
-	
-	public static void updateGamePhase(GamePhase gamePhase) {
-		currentGamePhase = gamePhase;
-	}
-	
-	public int getMaxMove() {
-		return nextMaxMove;
 	}
 }

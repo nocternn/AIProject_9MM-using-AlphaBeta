@@ -8,15 +8,25 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.StrokeType;
 
-public class Piece extends Circle {
+public class Piece extends Circle implements Cloneable {
+    boolean marked = false; // Piece is marked for deletion
+    
+    public int initialPosition = -1; // Current position on game board [0,23]
+    public boolean active = true; //Check if that piece is still available to play
+    
     private ArrayList<MoveListener> listeners = new ArrayList<MoveListener>();
     private double initialX, initialY;
-    private int initialPosition = -1; // Current position on game board [0,23]
     private int index; // Index when generate pieces, stay constant for entire game
-    private boolean active = true; //Check if that piece is still available to play
-    
-    public Piece() {
-    	// Empty constructor
+
+    public Piece clone() {
+    	Piece piece = this;
+    	try {
+			piece = (Piece) super.clone();
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}  
+    	return piece;
     }
     
     public Piece(Color fill, double x, double y, Color stroke, int index, MoveListener listener) {
@@ -33,8 +43,9 @@ public class Piece extends Circle {
 		this.index = index;
 		this.listeners.add(listener);
 		
+
+		this.setOnMousePressed(evt -> handleMousePress(evt));
 		if (fill == Color.WHITE) {
-			this.setOnMousePressed(evt -> handleMousePress(evt));
 			this.setOnMouseDragged(evt -> handleMouseDrag(evt));
 			this.setOnMouseReleased(evt -> handleMouseRelease(evt));
 		}
@@ -44,34 +55,39 @@ public class Piece extends Circle {
     	return this.index;
     }
     
-    public int getPosition() {
-    	return this.initialPosition;
-    }
-    
     public Color getColor() {
     	return (Color) this.getFill();
     }
     
-    public boolean getActive() {
-    	return active;
+    public boolean deletePiece() {
+    	if (marked) {
+	    	this.active = false;
+	    	this.setVisible(false);
+    	}
+    	return marked;
     }
     
-    public void deletePiece() {
-    	this.active = false;
-    }
-    
-	//Drag and drop functions for white pieces
-	public void handleMousePress(MouseEvent evt){
-        this.setFill(Color.YELLOW);
+	// Mouse interactions
+    private void handleMousePress(MouseEvent evt){
+		if ((Color) this.getFill() == Color.WHITE) {
+			this.setFill(Color.YELLOW);
+		} else {
+	    	if (deletePiece()) {
+	    		this.marked = false;
+                for (MoveListener listener : listeners)
+                	listener.removedBlackPiece(this.initialPosition);
+                this.initialPosition = -1;
+	    	}
+		}
     }
 	
-    public void handleMouseDrag(MouseEvent evt){
+    private void handleMouseDrag(MouseEvent evt){
     	this.setCenterX(evt.getX());
     	this.setCenterY(evt.getY());
         for(int i=0;i<BoardController.boardPosition.size();i++) BoardController.boardPosition.get(i).setFill(Color.rgb(84, 255, 135));
     }
     
-    public void handleMouseRelease(MouseEvent evt){
+    private void handleMouseRelease(MouseEvent evt){
     	this.setFill(Color.WHITE);
         double releaseX = evt.getSceneX();
         double releaseY = evt.getSceneY();
@@ -84,7 +100,7 @@ public class Piece extends Circle {
             	// If the closest position already holds a piece then skip
             	if (Board.isOccupied(i))
             		continue;
-                System.out.println("Snapped to: " + i + " " + tempX + " " +  tempY);
+                System.out.println("Snapped " + this.index + " to: " + i + " " + tempX + " " +  tempY);
                 for(int j=0;j<BoardController.boardPosition.size();j++) BoardController.boardPosition.get(j).setFill(Color.TRANSPARENT);
                 // Notify listeners that a white piece has been moved
                 for (MoveListener listener : listeners)
@@ -93,6 +109,7 @@ public class Piece extends Circle {
                 this.initialX = tempX;
                 this.initialY = tempY;
                 this.initialPosition = i;
+                break;
             }
         }
     	this.setCenterX(initialX);

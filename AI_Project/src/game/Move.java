@@ -1,13 +1,15 @@
 package game;
+
+import board.Piece;
+
 public class Move {
 	//A move of a piece from point A to point B
-	public int from;
-	public int to;
-	public int index; //Index of that piece
+	public Piece piece;
+	public Piece opponentPiece;
+	public int newPositionOnBoard;
 	
-	public Move (int from, int to, int index) {
-		this.from = from;
-		this.to = to;
-		this.index = index;
+	public Move (Piece piece, int to) {
+		this.piece = piece;
+		this.newPositionOnBoard = to;
 	}
 }
