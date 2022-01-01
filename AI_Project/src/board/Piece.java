@@ -1,7 +1,10 @@
 package board;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
+import game.Game;
+import game.Game.GamePhase;
 import helper.MoveListener;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -84,7 +87,17 @@ public class Piece extends Circle implements Cloneable {
     private void handleMouseDrag(MouseEvent evt){
     	this.setCenterX(evt.getX());
     	this.setCenterY(evt.getY());
-        for(int i=0;i<BoardController.boardPosition.size();i++) BoardController.boardPosition.get(i).setFill(Color.rgb(84, 255, 135));
+    	
+    	if (Game.getCurrentPhase() == GamePhase.Opening || Game.getCurrentPhase() == GamePhase.Ending) {
+    		for(int i=0;i<24;i++) 
+    			BoardController.boardPosition.get(i).setFill(Color.rgb(84, 255, 135));
+    	}
+    	else {
+    		for (int i=0; i<24; i++) {
+    			if (Board.isAdjacent(this.initialPosition,i) == true || i == this.initialPosition)
+    				BoardController.boardPosition.get(i).setFill(Color.rgb(84, 255, 135));
+    		}
+    	}
     }
     
     private void handleMouseRelease(MouseEvent evt){
@@ -99,6 +112,9 @@ public class Piece extends Circle implements Cloneable {
             if(releaseX >= tempX-50 && releaseX <= tempX+50 && releaseY >= tempY-50 && releaseY <= tempY+50) {
             	// If the closest position already holds a piece then skip
             	if (Board.isOccupied(i))
+            		continue;
+            	// In mid-game, if the closest position is not adjacent to the old position then skip
+            	else if (Game.getCurrentPhase() == GamePhase.Middle && Board.isAdjacent(this.initialPosition,i) == false)
             		continue;
                 System.out.println("Snapped " + this.index + " to: " + i + " " + tempX + " " +  tempY);
                 for(int j=0;j<BoardController.boardPosition.size();j++) BoardController.boardPosition.get(j).setFill(Color.TRANSPARENT);

@@ -20,6 +20,7 @@ public class Board implements MoveListener {
 			{3, 9, 11, 18}, {6, 10, 15}, {8, 13, 17}, {5, 12, 14, 20}, {2, 13, 23}, {11, 16}, {15, 17, 19}, {12, 16},
 			{10, 19}, {16, 18, 20, 22}, {13, 19}, {9, 22}, {19, 21, 23}, {14 ,22}
 	}; //Adjacent play positions of piece[i]
+	public static int stepCnt=0;
 	
 	private static Piece[] whitePieces = new Piece[9];
 	private static Piece[] blackPieces = new Piece[9];
@@ -71,13 +72,13 @@ public class Board implements MoveListener {
 					break;
 				case Middle:
 					// In middle phases, player can only move to adjacent points of a piece
-					for (int pos: possibleSlides[piece.initialPosition]) {
-						if (!isOccupied(board, pos)) {
-							possibleMoves.add(new Move(piece, pos));
+					if (piece.initialPosition >= 0)
+						for (int pos: possibleSlides[piece.initialPosition]) {
+							if (!isOccupied(board, pos)) {
+								possibleMoves.add(new Move(piece, pos));
+							}
 						}
-					}
 					break;
-					
 				case Ending:
 					// In end phase, player can move a piece to anywhere that is not occupied
 					for (int i = 0; i < 24; i++) {
@@ -104,6 +105,13 @@ public class Board implements MoveListener {
 			return true; // Mill was found
 		}
 		return false; // No mill found
+	}
+	
+	public static boolean isAdjacent(int initialPosition, int newPosition) {
+		for (int i: possibleSlides[initialPosition]) {
+			if (newPosition == i) return true;
+		}
+		return false;
 	}
 
 	public static boolean isOccupied(int position) {
@@ -165,15 +173,20 @@ public class Board implements MoveListener {
 		// Add piece at new position
 		whitePieces[pieceIndex].initialPosition = newPosition;
 		board[newPosition] = whitePieces[pieceIndex];
+		// Count turn
+		if(Game.getCurrentPhase() != GamePhase.Opening)
+			stepCnt++;
+		// Check for mill
+		BoardController.maskWhitePieces.toFront();
+		BoardController.maskBoard.toFront();
 		if (isMill(board, Color.WHITE, newPosition)) {
 			BoardController.millStatus.setVisible(true);
+			BoardController.bringPiecesToFront(board, Color.BLACK);
 			BoardController.markBlackPiece(board);
-		} else {
-			// Black's turn to make a move
-			moveBlackPiece();
-			// Update game phase
-			Game.updateGamePhase(board, whitePieces, blackPieces);
+			stepCnt = 0;
+			return;
 		}
+		blackTurn();
 	}
 	
 	@Override
@@ -183,10 +196,18 @@ public class Board implements MoveListener {
 		// Unmark pieces
 		BoardController.unmarkBlackPiece(board);
 		BoardController.millStatus.setVisible(false);
-		// Black's turn to make a move
-		moveBlackPiece();
-		// Update game phase
-		Game.updateGamePhase(board, whitePieces, blackPieces);
+		BoardController.maskBoard.toBack();
+		blackTurn();
+	}
+	
+	private void blackTurn() {
+		BoardController.setTurnVisibility(false, true);
+		new Thread(() -> {
+			// Black's turn to make a move
+			moveBlackPiece();
+			// Update game phase
+			Game.updateGamePhase(board, whitePieces, blackPieces);
+		}).start();
 	}
 	
 	private void initBoard() {
@@ -249,6 +270,7 @@ public class Board implements MoveListener {
 				}
 			}
 		}
+		BoardController.setTurnVisibility(true, false);
 	}
 	
 	private void deletePiece(Piece[] pieces, int index) {

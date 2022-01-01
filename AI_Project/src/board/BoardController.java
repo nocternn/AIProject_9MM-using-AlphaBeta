@@ -2,6 +2,7 @@ package board;
 
 import javafx.fxml.*;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.Group;
 import javafx.scene.control.ChoiceBox;
@@ -18,15 +19,19 @@ import java.util.Collections;
 import java.util.ResourceBundle;
 
 public class BoardController implements Initializable{
-    static ArrayList<Circle> boardPosition = new ArrayList<Circle>();
-    static Text millStatus;
-    static ArrayList<Group> crossPosition = new ArrayList<Group>();
+	public static ArrayList<Circle> boardPosition = new ArrayList<Circle>();
+    public static Text millStatus, gameResult, whiteWin, blackWin, draw;
+    public static ArrayList<Group> crossPosition = new ArrayList<Group>();
+    public static StackPane maskWhitePieces, maskBoard;
+    public static Group s_whiteTurn, s_blackTurn;
     @FXML
     private ChoiceBox<String> algoChoiceBox;
     @FXML
     private Circle pos1,pos2,pos3,pos4,pos5,pos6,pos7,pos8,pos9,pos10,pos11,pos12,pos13,pos14,pos15,pos16,pos17,pos18,pos19,pos20,pos21,pos22,pos23,pos24;
     @FXML
     private Pane pane;
+    @FXML
+    private Group whiteTurn, blackTurn;
     @FXML
     private Group x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14,x15,x16,x17,x18,x19,x20,x21,x22,x23,x24; // crosses to mark erasable pieces
     
@@ -44,10 +49,40 @@ public class BoardController implements Initializable{
         	crossPosition.get(i).setVisible(false);
         }
         
+        s_whiteTurn = whiteTurn;
+        s_blackTurn = blackTurn;
+        
         millStatus = new Text(550, 466, "Mill!");
         millStatus.setFont(Font.font("Georgia", FontWeight.BOLD, 30));
         millStatus.setVisible(false);
         pane.getChildren().add(millStatus);
+        
+        maskWhitePieces = new StackPane();
+        maskWhitePieces.setPrefSize(300, 50);
+        maskWhitePieces.setLayoutX(138);
+        maskWhitePieces.setLayoutY(107);
+        maskWhitePieces.setVisible(true);
+        pane.getChildren().add(maskWhitePieces);
+        
+        maskBoard = new StackPane();
+        maskBoard.setPrefSize(663, 640);
+        maskBoard.setLayoutX(256);
+        maskBoard.setLayoutY(137);
+        maskBoard.setVisible(true);
+        pane.getChildren().add(maskBoard);
+        
+        draw = new Text(525, 470, "DRAW");
+        draw.setFont(Font.font("Georgia", FontWeight.BOLD, 36));
+        draw.setVisible(false);
+        pane.getChildren().add(draw);
+        blackWin = new Text(522, 440, "BLACK\n  WIN!");
+        blackWin.setFont(Font.font("Georgia", FontWeight.BOLD, 36));
+        blackWin.setVisible(false);
+        pane.getChildren().add(blackWin);
+        whiteWin = new Text(519, 440, "WHITE\n   WIN!");
+        whiteWin.setFont(Font.font("Georgia", FontWeight.BOLD, 36));
+        whiteWin.setVisible(false);
+        pane.getChildren().add(whiteWin);
     }
     
 	public static void markBlackPiece(Piece[] board) {
@@ -67,5 +102,17 @@ public class BoardController implements Initializable{
 			if (board[i] != null && board[i].getColor() == Color.BLACK)
 					board[i].marked = false;
 		}
+	}
+	
+	public static void bringPiecesToFront(Piece[] board, Color color) {
+		for (int i=0; i<24; i++) {
+			if (Board.isOccupied(i) && board[i].getColor() == color) 
+				board[i].toFront();
+		}
+	}
+
+	public static void setTurnVisibility(boolean white, boolean black) {
+		s_whiteTurn.setVisible(white);
+		s_blackTurn.setVisible(black);
 	}
 }

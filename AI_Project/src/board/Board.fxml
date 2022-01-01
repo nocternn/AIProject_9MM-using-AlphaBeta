@@ -6,23 +6,34 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
 <Pane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="board.BoardController">
    <children>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="150.0" layoutX="944.0" layoutY="398.0" stroke="#515050" strokeType="INSIDE" strokeWidth="0.3" width="200.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="150.0" layoutX="43.0" layoutY="398.0" stroke="#515050" strokeType="INSIDE" strokeWidth="0.3" width="200.0" />
+      <VBox alignment="CENTER" layoutX="43.0" layoutY="365.0" prefHeight="200.0" prefWidth="200.0">
+         <children>
+            <Label alignment="CENTER" prefHeight="54.0" prefWidth="200.0" text="WHITE">
+               <font>
+                  <Font name="Georgia Bold" size="30.0" />
+               </font>
+            </Label>
+            <Label alignment="CENTER" prefHeight="22.0" prefWidth="202.0" text="Human Player">
+               <font>
+                  <Font name="Georgia" size="18.0" />
+               </font>
+            </Label>
+         </children>
+      </VBox>
       <ImageView fitHeight="750.0" fitWidth="1000.0" layoutX="211.0" layoutY="81.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@img/1024px-Nine_Men's_Morris_board.png" />
          </image>
       </ImageView>
-      <ChoiceBox fx:id="algoChoiceBox" layoutX="504.0" layoutY="70.0" prefHeight="28.0" prefWidth="165.0" style="-fx-background-color: #ffffff; -fx-border-color: #000000; -fx-border-width: 0.3;" />
-      <Label layoutX="545.0" layoutY="49.0" text="Algorithm">
-         <font>
-            <Font name="Georgia" size="18.0" />
-         </font>
-      </Label>
       <Circle fx:id="pos1" centerX="288.0" centerY="158.0" fill="TRANSPARENT" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
       <Circle fx:id="pos2" centerX="288.0" centerY="456.0" fill="TRANSPARENT" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
       <Circle fx:id="pos3" centerX="287.0" centerY="756.0" fill="TRANSPARENT" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
@@ -36,17 +47,17 @@
       <Circle fx:id="pos11" centerX="587.0" centerY="257.0" fill="TRANSPARENT" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
       <Circle fx:id="pos12" centerX="587.0" centerY="357.0" fill="TRANSPARENT" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
       <Circle fx:id="pos13" centerX="587.0" centerY="556.0" fill="TRANSPARENT" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="pos14" fill="TRANSPARENT" centerX="587.0" centerY="656.0" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="pos15" fill="TRANSPARENT" centerX="587.0" centerY="756.0" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="pos16" fill="TRANSPARENT" centerX="688.0" centerY="357.0" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="pos17" fill="TRANSPARENT" centerX="688.0" centerY="456.0" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="pos18" fill="TRANSPARENT" centerX="688.0" centerY="556.0" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
+      <Circle fx:id="pos14" centerX="587.0" centerY="656.0" fill="TRANSPARENT" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
+      <Circle fx:id="pos15" centerX="587.0" centerY="756.0" fill="TRANSPARENT" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
+      <Circle fx:id="pos16" centerX="688.0" centerY="357.0" fill="TRANSPARENT" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
+      <Circle fx:id="pos17" centerX="688.0" centerY="456.0" fill="TRANSPARENT" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
+      <Circle fx:id="pos18" centerX="688.0" centerY="556.0" fill="TRANSPARENT" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
       <Circle fx:id="pos19" centerX="788.0" centerY="257.0" fill="TRANSPARENT" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="pos20" fill="TRANSPARENT" centerX="788.0" centerY="456.0" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="pos21" fill="TRANSPARENT" centerX="788.0" centerY="656.0" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="pos22" fill="TRANSPARENT" centerX="886.0" centerY="158.0" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="pos23" fill="TRANSPARENT" centerX="886.0" centerY="456.0" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="pos24" fill="#54ff8500" centerX="886.0" centerY="756.0" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
+      <Circle fx:id="pos20" centerX="788.0" centerY="456.0" fill="TRANSPARENT" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
+      <Circle fx:id="pos21" centerX="788.0" centerY="656.0" fill="TRANSPARENT" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
+      <Circle fx:id="pos22" centerX="886.0" centerY="158.0" fill="TRANSPARENT" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
+      <Circle fx:id="pos23" centerX="886.0" centerY="456.0" fill="TRANSPARENT" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
+      <Circle fx:id="pos24" centerX="886.0" centerY="756.0" fill="#54ff8500" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
       <Group layoutX="886.0" layoutY="741.0" fx:id="x24">
          <children>
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="RED" height="28.0" layoutX="-1.0" layoutY="2.0" rotate="45.0" stroke="TRANSPARENT" strokeType="INSIDE" width="4.0" />
@@ -191,5 +202,35 @@
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="RED" height="28.0" rotate="-45.0" stroke="TRANSPARENT" strokeType="INSIDE" width="4.0" x="-0.9180488586425781" y="1.9103775024414062" />
          </children>
       </Group>
+      <Group fx:id="whiteTurn" layoutX="43.0" layoutY="365.0">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f4f4f4" height="33.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3" width="200.0" />
+            <Label alignment="CENTER" prefHeight="34.0" prefWidth="202.0" text="YOUR TURN" textAlignment="CENTER">
+               <font>
+                  <Font name="Calibri" size="14.0" />
+               </font>
+            </Label>
+         </children>
+      </Group>
+      <Group fx:id="blackTurn" layoutX="943.0" layoutY="365.0" visible="false">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f4f4f4" height="33.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3" width="200.0" />
+            <Label alignment="CENTER" prefHeight="34.0" prefWidth="202.0" text="CURRENT TURN" textAlignment="CENTER">
+               <font>
+                  <Font name="Calibri" size="14.0" />
+               </font>
+            </Label>
+         </children>
+      </Group>
+      <VBox alignment="CENTER" layoutX="944.0" layoutY="365.0" prefHeight="200.0" prefWidth="200.0">
+         <children>
+            <Label alignment="CENTER" prefHeight="54.0" prefWidth="200.0" text="BLACK">
+               <font>
+                  <Font name="Georgia Bold" size="30.0" />
+               </font>
+            </Label>
+            <ChoiceBox fx:id="algoChoiceBox" prefHeight="28.0" prefWidth="165.0" style="-fx-background-color: #ffffff; -fx-border-color: #000000; -fx-border-width: 0.3;" />
+         </children>
+      </VBox>
    </children>
 </Pane>
