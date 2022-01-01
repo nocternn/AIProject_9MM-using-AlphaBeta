@@ -12,11 +12,16 @@ public class Board implements MoveListener {
 	public ArrayList<Piece> whitePieces = new ArrayList<Piece>();
 	public ArrayList<Piece> blackPieces = new ArrayList<Piece>();
 	
-	private static Piece[] board = new Piece[24];
+	public static Piece[] board = new Piece[24];
 	private static final int[][] possibleMills = {
 			{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}, {12, 13, 14}, {15, 16, 17}, {18, 19, 20}, {21, 22, 23},
 			{0, 9, 21}, {3, 10, 18}, {6, 11, 15}, {1, 4, 7}, {16, 19, 22}, {8, 12, 17}, {5, 13, 20}, {2, 14, 23}
 		};
+	public static final int[][] possibleSlides = {
+			{1, 9}, {0, 2, 4}, {1, 14}, {4, 10}, {1, 3, 5, 7}, {4, 13}, {7, 11}, {4, 6 ,8}, {7, 12}, {0, 10, 21},
+			{3, 9, 11, 18}, {6, 10, 15}, {8, 13, 17}, {5, 12, 14, 20}, {2, 13, 23}, {11, 16}, {15, 17, 19}, {12, 16},
+			{10, 19}, {16, 18, 20, 22}, {13, 19}, {9, 22}, {19, 21, 23}, {14 ,22}
+	}; //Adjacent play positions of piece[i]
 	
 	public Board() {
 		// Initialize black pieces.
@@ -46,6 +51,7 @@ public class Board implements MoveListener {
 			BoardController.stackPane.toFront();
 		if (isMill(Color.WHITE, newPosition)) {
 			System.out.println("White formed a mill");
+			BoardController.stackPane.toFront();
 			BoardController.millStatus.setVisible(true);
 			markBlackPiece();
 			BoardController.millStatus.setVisible(false);
@@ -68,7 +74,7 @@ public class Board implements MoveListener {
 	public static int getNumberBlackOnBoard() {
 		int count = 0;
 		for (Piece piece : board) {
-			if (piece != null && piece.getColor() == Color.BLACK && piece.getStatus() == true)
+			if (piece != null && piece.getColor() == Color.BLACK && piece.getActive() == true)
 				count++;
 		}
 		return count;
@@ -136,9 +142,16 @@ public class Board implements MoveListener {
 			}				
 		}
 	}
+	
+	public static boolean isAdjacent(int initialPosition, int newPosition) {
+		for (int i: possibleSlides[initialPosition]) {
+			if (newPosition == i) return true;
+		}
+		return false;
+	}
 
 	public static boolean isOccupied(int position) {
-		if (board[position] == null || board[position].getStatus() == false)
+		if (board[position] == null || board[position].getActive() == false)
 			return false;
 		return true;
 	}

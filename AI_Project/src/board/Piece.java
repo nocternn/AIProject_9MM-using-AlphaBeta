@@ -2,6 +2,8 @@ package board;
 
 import java.util.ArrayList;
 
+import game.Game;
+import game.Game.GamePhase;
 import helper.MoveListener;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -50,9 +52,9 @@ public class Piece extends Circle {
     	return this.initialPosition;
     }
     
-    public boolean getStatus() {
-    	return this.active;
-    }
+    public boolean getActive() {
+    	return active;
+    } 
     
     public Color getColor() {
     	return (Color) this.getFill();
@@ -69,20 +71,33 @@ public class Piece extends Circle {
     public void handleMouseDrag(MouseEvent evt){
     	this.setCenterX(evt.getX());
     	this.setCenterY(evt.getY());
-        for(int i=0;i<BoardController.boardPosition.size();i++) BoardController.boardPosition.get(i).setFill(Color.rgb(84, 255, 135));   
+        
+    	if (Game.getCurrentPhase() == GamePhase.Opening || Game.getCurrentPhase() == GamePhase.Ending) {
+    		for(int i=0;i<24;i++) 
+    			BoardController.boardPosition.get(i).setFill(Color.rgb(84, 255, 135));
+    	}    	
+    	else {
+    		for (int i=0; i<24; i++) {
+    			if (Board.isAdjacent(this.initialPosition,i) == true || i == this.initialPosition)
+    				BoardController.boardPosition.get(i).setFill(Color.rgb(84, 255, 135));
+    		}
+    	}
     }
     public void handleMouseRelease(MouseEvent evt){
     	this.setFill(Color.WHITE);
         double releaseX = evt.getSceneX();
         double releaseY = evt.getSceneY();
         System.out.println("Drop location: " + releaseX + " " + releaseY);
-        for(int i=0; i<BoardController.boardPosition.size();i++){
+        for(int i=0; i<24;i++){
             double tempX = BoardController.boardPosition.get(i).getCenterX();
             double tempY = BoardController.boardPosition.get(i).getCenterY();
             // If the piece was release close enough to a valid position then snap it to that position
             if(releaseX >= tempX-50 && releaseX <= tempX+50 && releaseY >= tempY-50 && releaseY <= tempY+50) {
             	// If the closest position already holds a piece then skip
             	if (Board.isOccupied(i))
+            		continue;
+            	// In mid-game, if the closest position is not adjacent to the old position then skip
+            	else if (Game.getCurrentPhase() == GamePhase.Middle && Board.isAdjacent(this.initialPosition,i) == false)
             		continue;
                 System.out.println("Snapped to: " + i + " " + tempX + " " +  tempY);
                 for(int j=0;j<BoardController.boardPosition.size();j++) BoardController.boardPosition.get(j).setFill(Color.TRANSPARENT);
@@ -101,13 +116,21 @@ public class Piece extends Circle {
     	this.setCenterY(initialY);
     }
     
-    //Click to delete
+    //Click to delete a black piece
     public void handleMouseClicked(MouseEvent evt) {
     	this.deletePiece();
     	System.out.println("Deleted a black piece");
     	BoardController.stackPane.toFront();
     	// Unmark the pieces after delete
-		for (int i=0; i<24; i++)
+		for (int i=0; i<24; i++) {
 			BoardController.crossPosition.get(i).setVisible(false);
+		}
+		
+		if (Game.getCurrentPhase() == GamePhase.Middle || Game.getCurrentPhase() == GamePhase.Ending) {
+			for (int i=0; i<24; i++) {
+				if (Board.isOccupied(i) && Board.board[i].getColor() == Color.WHITE) 
+					Board.board[i].toFront();			
+			}
+		}
     }
 }

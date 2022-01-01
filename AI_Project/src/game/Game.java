@@ -1,6 +1,7 @@
 package game;
 
 import board.Board;
+import javafx.scene.paint.Color;
 
 public class Game {
 	public enum GamePhase {Opening, Middle, Ending};
@@ -16,8 +17,13 @@ public class Game {
 	public static void updateGamePhase() {
 		switch (currentPhase) {
 		case Opening:
-			if (Board.getNumberWhiteOnBoard() == MAX_PIECES_ON_BOARD && Board.getNumberBlackOnBoard() == MAX_PIECES_ON_BOARD)
+			if (Board.getNumberWhiteOnBoard() == MAX_PIECES_ON_BOARD && Board.getNumberBlackOnBoard() == MAX_PIECES_ON_BOARD) {
 				currentPhase = GamePhase.Middle;
+				for (int i=0; i<24; i++) {
+					if (Board.isOccupied(i) && Board.board[i].getColor() == Color.WHITE) 
+						Board.board[i].toFront();			
+				}
+			}
 			break;
 		case Middle:
 			if (Board.getNumberWhiteOnBoard() == MIN_PIECES_ON_BOARD && Board.getNumberBlackOnBoard() == MIN_PIECES_ON_BOARD)
