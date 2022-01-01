@@ -50,6 +50,10 @@ public class Piece extends Circle {
     	return this.initialPosition;
     }
     
+    public boolean getStatus() {
+    	return this.active;
+    }
+    
     public Color getColor() {
     	return (Color) this.getFill();
     }

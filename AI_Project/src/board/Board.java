@@ -68,7 +68,7 @@ public class Board implements MoveListener {
 	public static int getNumberBlackOnBoard() {
 		int count = 0;
 		for (Piece piece : board) {
-			if (piece != null && piece.getColor() == Color.BLACK)
+			if (piece != null && piece.getColor() == Color.BLACK && piece.getStatus() == true)
 				count++;
 		}
 		return count;
@@ -138,7 +138,7 @@ public class Board implements MoveListener {
 	}
 
 	public static boolean isOccupied(int position) {
-		if (board[position] == null)
+		if (board[position] == null || board[position].getStatus() == false)
 			return false;
 		return true;
 	}
