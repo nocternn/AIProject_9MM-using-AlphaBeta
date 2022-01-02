@@ -31,6 +31,17 @@ public class Main extends Application{
 		Pane pane = (Pane) scene.lookup("#pane");
 		pane.getChildren().addAll(board.getBlackPieces());
 		pane.getChildren().addAll(board.getWhitePieces());
+		
+		BoardController.restartButton.setOnAction(evt -> {
+			// Remove current game
+			pane.getChildren().removeAll(board.getBlackPieces());
+			pane.getChildren().removeAll(board.getWhitePieces());
+			// Initialize new game board
+			board = new Board();
+			algorithms = new Algorithms();
+			pane.getChildren().addAll(board.getBlackPieces());
+			pane.getChildren().addAll(board.getWhitePieces());
+        	System.out.println("Game restarted");});
 	}
 	
 	public static Board getBoard() {

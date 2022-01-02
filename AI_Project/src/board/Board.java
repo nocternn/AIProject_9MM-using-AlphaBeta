@@ -2,7 +2,6 @@ package board;
 
 import java.util.ArrayList;
 
-import game.Algorithms;
 import game.Game;
 import game.Game.GamePhase;
 import game.Move;
@@ -225,6 +224,15 @@ public class Board implements MoveListener {
 			whitePieces[whiteIndex] = new Piece(Color.WHITE, centerX, 118, Color.BLACK, whiteIndex, this);
 			whiteIndex++;
 		}
+		//Set all positions on board to null, set visibility of all unrelated components to false
+		for (int i=0; i<24; i++) {
+			board[i] = null;
+			BoardController.crossPosition.get(i).setVisible(false);
+		}
+		BoardController.millStatus.setVisible(false);
+		BoardController.whiteWin.setVisible(false);
+		BoardController.blackWin.setVisible(false);
+		BoardController.draw.setVisible(false);
 	}
 	
 	private void moveBlackPiece(Piece[] board, Piece[] white, Piece[] black) {

@@ -1,8 +1,6 @@
 package board;
 
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
-
 import game.Game;
 import game.Game.GamePhase;
 import helper.MoveListener;
@@ -127,6 +125,8 @@ public class Piece extends Circle implements Cloneable {
                 this.initialPosition = i;
                 break;
             }
+            // If the position of the piece doesn't change after drag
+            else for(int j=0;j<BoardController.boardPosition.size();j++) BoardController.boardPosition.get(j).setFill(Color.TRANSPARENT);
         }
     	this.setCenterX(initialX);
     	this.setCenterY(initialY);

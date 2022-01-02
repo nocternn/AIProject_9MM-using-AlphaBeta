@@ -5,7 +5,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.Group;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -18,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.ResourceBundle;
 
+import game.Algorithms;
+
 public class BoardController implements Initializable{
 	public static ArrayList<Circle> boardPosition = new ArrayList<Circle>();
     public static Text millStatus, gameResult, whiteWin, blackWin, draw;
@@ -25,6 +29,7 @@ public class BoardController implements Initializable{
     public static StackPane maskWhitePieces, maskBoard;
     public static Group s_whiteTurn, s_blackTurn;
     public static ChoiceBox<String> s_algoChoiceBox;
+    public static Button restartButton;
     @FXML
     private ChoiceBox<String> algoChoiceBox;
     @FXML
@@ -35,6 +40,8 @@ public class BoardController implements Initializable{
     private Group whiteTurn, blackTurn;
     @FXML
     private Group x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14,x15,x16,x17,x18,x19,x20,x21,x22,x23,x24; // crosses to mark erasable pieces
+    @FXML
+    private Button restart;
     
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
@@ -56,7 +63,8 @@ public class BoardController implements Initializable{
         
         s_whiteTurn = whiteTurn;
         s_blackTurn = blackTurn;
-        
+        restartButton = restart;
+            
         millStatus = new Text(550, 466, "Mill!");
         millStatus.setFont(Font.font("Georgia", FontWeight.BOLD, 30));
         millStatus.setVisible(false);
