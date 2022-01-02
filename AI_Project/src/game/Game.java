@@ -35,7 +35,7 @@ public class Game {
 		return currentPhase;
 	}
 	
-	public static GamePhase updateGamePhase(Piece[] gameboard, Piece[] white, Piece[] black) {
+	public static void updateGamePhase(Piece[] gameboard, Piece[] white, Piece[] black) {
 		switch (currentPhase) {
 		case Opening:
 			updateUITask = new FutureTask<Void>(() -> {
@@ -54,17 +54,13 @@ public class Game {
 				BoardController.maskBoard.toBack();
 			}, null);
 			if (board.getNumberOfPiecesOnBoard(gameboard, Color.WHITE) == MIN_PIECES_ON_BOARD 
-					&& board.getNumberOfPiecesOnBoard(gameboard, Color.BLACK) == MIN_PIECES_ON_BOARD)
+					|| board.getNumberOfPiecesOnBoard(gameboard, Color.BLACK) == MIN_PIECES_ON_BOARD)
 				currentPhase = GamePhase.Ending;
-			else if (board.getNumberOfPiecesOnBoard(gameboard, Color.WHITE) < MIN_PIECES_ON_BOARD
-					|| board.getNumberOfPiecesOnBoard(gameboard, Color.BLACK) < MIN_PIECES_ON_BOARD) {
-				updateUITask = new FutureTask<Void>(() -> {
-					BoardController.maskBoard.toFront();
-				}, null);
-				gameOver(gameboard);
-			}
 			break;
 		case Ending:
+			updateUITask = new FutureTask<Void>(() -> {
+				BoardController.maskBoard.toBack();
+			}, null);
 			if (board.getNumberOfPiecesOnBoard(gameboard, Color.WHITE) < MIN_PIECES_ON_BOARD
 					|| board.getNumberOfPiecesOnBoard(gameboard, Color.BLACK) < MIN_PIECES_ON_BOARD
 					|| Board.stepCnt >= 10) {
@@ -73,6 +69,8 @@ public class Game {
 				}, null);
 				gameOver(gameboard);
 			}
+			break;
+		default:
 			break;
 		}
 		
@@ -87,8 +85,17 @@ public class Game {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	    
-		return currentPhase;
+	}
+	
+	public static boolean isGameOver(Piece[] gameboard) {
+		if (currentPhase == GamePhase.Ending && (board.getNumberOfPiecesOnBoard(gameboard, Color.WHITE) < MIN_PIECES_ON_BOARD
+			|| board.getNumberOfPiecesOnBoard(gameboard, Color.BLACK) < MIN_PIECES_ON_BOARD
+			|| Board.stepCnt >= 10)) {
+			BoardController.maskBoard.toFront();
+			gameOver(gameboard);
+			return true;
+		}
+		return false;
 	}
 
 	private static void gameOver(Piece[] gameboard) {

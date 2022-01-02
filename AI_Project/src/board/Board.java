@@ -201,11 +201,13 @@ public class Board implements MoveListener {
 	}
 	
 	private void blackTurn() {
+		// If white won, stop the game
+		if (Game.isGameOver(board))
+			return;
+		// Else it's black's turn to move
 		BoardController.setTurnVisibility(false, true);
 		new Thread(() -> {
-			// Black's turn to make a move
-			moveBlackPiece();
-			// Update game phase
+			moveBlackPiece(board, whitePieces, blackPieces);
 			Game.updateGamePhase(board, whitePieces, blackPieces);
 		}).start();
 	}
@@ -217,8 +219,7 @@ public class Board implements MoveListener {
 			blackPieces[blackIndex] = new Piece(Color.BLACK, centerX, 118, Color.WHITESMOKE, blackIndex, this);
 			blackIndex++;
 		}
-		
-		// Initialize white pieces. Set drag and drop feature for white pieces.
+		// Initialize white pieces.
 		int whiteIndex = 0;
 		for (double centerX = 218.0; centerX < 218.0+14.0*9; centerX += 14.0) {
 			whitePieces[whiteIndex] = new Piece(Color.WHITE, centerX, 118, Color.BLACK, whiteIndex, this);
@@ -226,17 +227,17 @@ public class Board implements MoveListener {
 		}
 	}
 	
-	private void moveBlackPiece() {
+	private void moveBlackPiece(Piece[] board, Piece[] white, Piece[] black) {
 		// Get next move of AI
-		Move nextMove = Main.getAlgorithms().getMove();
+		Move nextMove = Main.getAlgorithms().getMove(board, white, black);
 		// Get move data
 		int index = nextMove.piece.getIndex();
 		int oldPosition = nextMove.piece.initialPosition;
 		int newPosition = nextMove.newPositionOnBoard;
 		// Execute move
-		blackPieces[index].setCenterX(BoardController.boardPosition.get(newPosition).getCenterX());
-		blackPieces[index].setCenterY(BoardController.boardPosition.get(newPosition).getCenterY());
-		blackPieces[index].initialPosition = newPosition;
+		black[index].setCenterX(BoardController.boardPosition.get(newPosition).getCenterX());
+		black[index].setCenterY(BoardController.boardPosition.get(newPosition).getCenterY());
+		black[index].initialPosition = newPosition;
 		board[newPosition] = blackPieces[index];
 		if (oldPosition >= 0)
 			board[oldPosition] = null;
@@ -245,7 +246,7 @@ public class Board implements MoveListener {
 			if (nextMove.opponentPiece != null) {
 				// Remove same piece as decided in minimax
 				board[nextMove.opponentPiece.initialPosition] = null;
-				whitePieces[nextMove.opponentPiece.getIndex()].deletePiece();
+				white[nextMove.opponentPiece.getIndex()].deletePiece();
 			} else {
 				// Delete an opponent piece on board
 				int[] almostMill = findAlmostMill(board, Color.WHITE);
@@ -253,7 +254,7 @@ public class Board implements MoveListener {
 					// If there exists some almost mill then delete one of its pieces
 					for (int position : almostMill) {
 						if (board[position] != null && !isMill(board, Color.WHITE, position)) {
-							deletePiece(whitePieces, board[position].getIndex());
+							deletePiece(white, board[position].getIndex());
 							board[position] = null;
 							break;
 						}
@@ -262,7 +263,7 @@ public class Board implements MoveListener {
 					// If there is no almost mill then delete the first piece found on board
 					for (int position = 0; position < 24; position++) {
 						if (board[position] != null && !isMill(board, Color.WHITE, position) && board[position].getColor() == Color.WHITE) {
-							deletePiece(whitePieces, board[position].getIndex());
+							deletePiece(white, board[position].getIndex());
 							board[position] = null;
 							break;
 						}

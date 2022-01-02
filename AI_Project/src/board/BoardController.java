@@ -24,6 +24,7 @@ public class BoardController implements Initializable{
     public static ArrayList<Group> crossPosition = new ArrayList<Group>();
     public static StackPane maskWhitePieces, maskBoard;
     public static Group s_whiteTurn, s_blackTurn;
+    public static ChoiceBox<String> s_algoChoiceBox;
     @FXML
     private ChoiceBox<String> algoChoiceBox;
     @FXML
@@ -37,11 +38,15 @@ public class BoardController implements Initializable{
     
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
-       ArrayList<String> st = new ArrayList<>();
+    	ArrayList<String> st = new ArrayList<>();
         st.add("Alpha-Beta, 2 moves ahead");
-        st.add("Alpha-Beta, 5 moves ahead");
-        st.add("Alpha-Beta, 7 moves ahead");
+        st.add("Alpha-Beta, 4 moves ahead");
+        st.add("Alpha-Beta, 6 moves ahead");
+        st.add("Alpha-Beta, 8 moves ahead");
+        st.add("Alpha-Beta, 10 moves ahead");
         algoChoiceBox.setItems(FXCollections.observableArrayList(st));
+        algoChoiceBox.getSelectionModel().selectFirst();
+        s_algoChoiceBox = algoChoiceBox;
         
         Collections.addAll(boardPosition,pos1,pos2,pos3,pos4,pos5,pos6,pos7,pos8,pos9,pos10,pos11,pos12,pos13,pos14,pos15,pos16,pos17,pos18,pos19,pos20,pos21,pos22,pos23,pos24);
         Collections.addAll(crossPosition,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14,x15,x16,x17,x18,x19,x20,x21,x22,x23,x24);
@@ -114,5 +119,20 @@ public class BoardController implements Initializable{
 	public static void setTurnVisibility(boolean white, boolean black) {
 		s_whiteTurn.setVisible(white);
 		s_blackTurn.setVisible(black);
+	}
+	
+	public static int getAlgorithmDepth() {
+		switch(s_algoChoiceBox.getSelectionModel().getSelectedIndex()) {
+		case 1:
+			return 4;
+		case 2:
+			return 6;
+		case 3:
+			return 8;
+		case 4:
+			return 10;
+		default:
+			return 2;
+		}
 	}
 }
