@@ -6,6 +6,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.Group;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -25,6 +26,7 @@ public class BoardController implements Initializable{
     public static StackPane maskWhitePieces, maskBoard;
     public static Group s_whiteTurn, s_blackTurn;
     public static ChoiceBox<String> s_algoChoiceBox;
+    public static ProgressBar s_blackProgress;
     @FXML
     private ChoiceBox<String> algoChoiceBox;
     @FXML
@@ -35,7 +37,9 @@ public class BoardController implements Initializable{
     private Group whiteTurn, blackTurn;
     @FXML
     private Group x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14,x15,x16,x17,x18,x19,x20,x21,x22,x23,x24; // crosses to mark erasable pieces
-    
+    @FXML
+    private ProgressBar blackProgress;
+
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
     	ArrayList<String> st = new ArrayList<>();
@@ -88,6 +92,9 @@ public class BoardController implements Initializable{
         whiteWin.setFont(Font.font("Georgia", FontWeight.BOLD, 36));
         whiteWin.setVisible(false);
         pane.getChildren().add(whiteWin);
+
+        s_blackProgress = blackProgress;   
+        setTurnVisibility(true, false);
     }
     
 	public static void markBlackPiece(Piece[] board) {
@@ -119,7 +126,23 @@ public class BoardController implements Initializable{
 	public static void setTurnVisibility(boolean white, boolean black) {
 		s_whiteTurn.setVisible(white);
 		s_blackTurn.setVisible(black);
+        s_blackProgress.setProgress(ProgressBar.INDETERMINATE_PROGRESS);
+        if(black){
+            s_blackProgress.setStyle("-fx-accent: black;");
+        }
+        else{
+            s_blackProgress.setStyle("-fx-accent: white;");
+        }
 	}
+
+    public static void controlProgress(boolean Active){
+        if(Active){
+            s_blackProgress.setStyle("-fx-accent: black;");
+        }
+        else{
+            s_blackProgress.setStyle("-fx-accent: rgba(255,255,255,0);");
+        }
+    }
 	
 	public static int getAlgorithmDepth() {
 		switch(s_algoChoiceBox.getSelectionModel().getSelectedIndex()) {

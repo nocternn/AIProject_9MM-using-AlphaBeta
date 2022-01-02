@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.Group?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
@@ -21,6 +24,9 @@
                <font>
                   <Font name="Georgia Bold" size="30.0" />
                </font>
+               <padding>
+                  <Insets bottom="-4.0" />
+               </padding>
             </Label>
             <Label alignment="CENTER" prefHeight="22.0" prefWidth="202.0" text="Human Player">
                <font>
@@ -58,12 +64,6 @@
       <Circle fx:id="pos22" centerX="886.0" centerY="158.0" fill="TRANSPARENT" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
       <Circle fx:id="pos23" centerX="886.0" centerY="456.0" fill="TRANSPARENT" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
       <Circle fx:id="pos24" centerX="886.0" centerY="756.0" fill="#54ff8500" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
-<<<<<<< HEAD
-      <Group fx:id="whiteTurn" layoutX="43.0" layoutY="365.0">
-         <children>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f4f4f4" height="33.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3" width="200.0" />
-            <Label alignment="CENTER" prefHeight="34.0" prefWidth="202.0" text="CURRENT TURN" textAlignment="CENTER">
-=======
       <Group layoutX="886.0" layoutY="741.0" fx:id="x24">
          <children>
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="RED" height="28.0" layoutX="-1.0" layoutY="2.0" rotate="45.0" stroke="TRANSPARENT" strokeType="INSIDE" width="4.0" />
@@ -212,18 +212,13 @@
          <children>
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f4f4f4" height="33.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3" width="200.0" />
             <Label alignment="CENTER" prefHeight="34.0" prefWidth="202.0" text="YOUR TURN" textAlignment="CENTER">
->>>>>>> 1d670571d04048ee1642cdea9f2260b27cdf157f
                <font>
                   <Font name="Calibri" size="14.0" />
                </font>
             </Label>
          </children>
       </Group>
-<<<<<<< HEAD
-      <Group fx:id="blackTurn" layoutX="943.0" layoutY="365.0">
-=======
       <Group fx:id="blackTurn" layoutX="943.0" layoutY="365.0" visible="false">
->>>>>>> 1d670571d04048ee1642cdea9f2260b27cdf157f
          <children>
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f4f4f4" height="33.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3" width="200.0" />
             <Label alignment="CENTER" prefHeight="34.0" prefWidth="202.0" text="CURRENT TURN" textAlignment="CENTER">
@@ -239,7 +234,15 @@
                <font>
                   <Font name="Georgia Bold" size="30.0" />
                </font>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <VBox.margin>
+                  <Insets bottom="-4.0" />
+               </VBox.margin>
             </Label>
+            <ProgressBar fx:id="blackProgress" prefHeight="18.0" prefWidth="78.0" progress="0.0" style="-fx-accent: black;" />
+            <Separator prefHeight="14.0" prefWidth="200.0" visible="false" />
             <ChoiceBox fx:id="algoChoiceBox" prefHeight="28.0" prefWidth="165.0" style="-fx-background-color: #ffffff; -fx-border-color: #000000; -fx-border-width: 0.3;" />
          </children>
       </VBox>

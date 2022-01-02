@@ -2,11 +2,11 @@ package board;
 
 import java.util.ArrayList;
 
-import game.Algorithms;
 import game.Game;
 import game.Game.GamePhase;
 import game.Move;
 import helper.MoveListener;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.paint.Color;
 import main.Main;
 
@@ -24,7 +24,7 @@ public class Board implements MoveListener {
 	
 	private static Piece[] whitePieces = new Piece[9];
 	private static Piece[] blackPieces = new Piece[9];
-	public static Piece[] board = new Piece[27];
+	private static Piece[] board = new Piece[24];
 	
 	public Board() {
 		initBoard();
