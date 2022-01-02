@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.ResourceBundle;
 
 public class BoardController implements Initializable{
-    public static Text gameResult;
+    public static Text whiteWin,blackWin,draw;
     static ArrayList<Circle> boardPosition = new ArrayList<Circle>();
     @FXML
     private ChoiceBox<String> algoChoiceBox;
@@ -35,8 +35,14 @@ public class BoardController implements Initializable{
         
         Collections.addAll(boardPosition,pos1,pos2,pos3,pos4,pos5,pos6,pos7,pos8,pos9,pos10,pos11,pos12,pos13,pos14,pos15,pos16,pos17,pos18,pos19,pos20,pos21,pos22,pos23,pos24);
 
-        gameResult = new Text();
-        pane.getChildren().add(gameResult);
-
+        draw = new Text(525, 470, "DRAW");
+		draw.setFont(Font.font("Georgia", FontWeight.BOLD, 36));
+		draw.setVisible(false);
+        blackWin = new Text(522, 440, "BLACK\n  WIN!");
+		blackWin.setFont(Font.font("Georgia", FontWeight.BOLD, 36));
+		blackWin.setVisible(false);
+        whiteWin = new Text(519, 440, "WHITE\n   WIN!");
+		whiteWin.setFont(Font.font("Georgia", FontWeight.BOLD, 36));
+		whiteWin.setVisible(false);
     }    
 }

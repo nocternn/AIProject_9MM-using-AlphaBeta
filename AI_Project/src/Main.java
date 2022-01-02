@@ -23,8 +23,8 @@ public class Main extends Application{
 		board = new Board();
 		
 		Pane pane = (Pane) scene.lookup("#pane");
-		pane.getChildren().addAll(board.blackPieces);
-		pane.getChildren().addAll(board.whitePieces);
+		pane.getChildren().addAll(board.getBlackPieces());
+		pane.getChildren().addAll(board.getWhitePieces());
 	}
 	
 	public static void main(String[] args) {

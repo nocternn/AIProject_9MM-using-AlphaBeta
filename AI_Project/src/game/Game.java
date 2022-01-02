@@ -2,53 +2,61 @@ package game;
 
 import board.Board;
 import board.BoardController;
-
-import javafx.scene.text.*;
+import main.Main;
 
 public class Game {
 	public enum GamePhase {Opening, Middle, Ending};
 	public static final int MAX_PIECES_ON_BOARD = 9;
 	public static final int MIN_PIECES_ON_BOARD = 3;
+	public static int turnCounter = 0; //Count playing turns
 	
 	private static GamePhase currentPhase = GamePhase.Opening;
+	private static Board board = Main.getBoard();
+	
+	public static int getTurnCounter() {
+		return turnCounter;
+	}
+
+	public static void setTurnCounter(int turnCounter) {
+		Game.turnCounter = turnCounter;
+	}
+
 
 	public static GamePhase getCurrentPhase() {
 		return currentPhase;
 	}
 	
 	public static void updateGamePhase() {
+		int numberWhite = board.getNumberWhiteOnBoard();
+		int numberBlack = board.getNumberBlackOnBoard();
+		
 		switch (currentPhase) {
 		case Opening:
-			if (Board.getNumberWhiteOnBoard() == MAX_PIECES_ON_BOARD && Board.getNumberBlackOnBoard() == MAX_PIECES_ON_BOARD)
+			if (numberWhite == MAX_PIECES_ON_BOARD && numberBlack == MAX_PIECES_ON_BOARD)
 				currentPhase = GamePhase.Middle;
 			break;
 		case Middle:
-			if (Board.getNumberWhiteOnBoard() == MIN_PIECES_ON_BOARD && Board.getNumberBlackOnBoard() == MIN_PIECES_ON_BOARD)
+			if (numberWhite == MIN_PIECES_ON_BOARD && numberBlack == MIN_PIECES_ON_BOARD)
 				currentPhase = GamePhase.Ending;
 			break;
 		case Ending:
-			if (Board.getNumberWhiteOnBoard() < MIN_PIECES_ON_BOARD || Board.getNumberBlackOnBoard() < MIN_PIECES_ON_BOARD || Board.stepCnt >= 10)
+			if (numberWhite < MIN_PIECES_ON_BOARD || numberBlack < MIN_PIECES_ON_BOARD)
 				gameOver();
 			break;
 		}
 	}
 
-	private static void gameOver() {
-		if(Board.stepCnt >= 10){
-			BoardController.gameResult = new Text(525, 470, "DRAW");
-			BoardController.gameResult.setFont(Font.font("Georgia", FontWeight.BOLD, 36));
-			BoardController.gameResult.setVisible(true);
+	public static void gameOver() {
+		// TODO Show winner/draw screen
+		if(board.stepCnt >= 10){
+			BoardController.draw.setVisible(true);
 		}
-		else if(Board.getNumberWhiteOnBoard() < MIN_PIECES_ON_BOARD){
-			BoardController.gameResult = new Text(522, 440, "BLACK\n  WIN!");
-			BoardController.gameResult.setFont(Font.font("Georgia", FontWeight.BOLD, 36));
-			BoardController.gameResult.setVisible(true);
+		else if(board.getNumberWhiteOnBoard() < MIN_PIECES_ON_BOARD){
+			BoardController.blackWin.setVisible(true);
 		}
 		else{
-			BoardController.gameResult = new Text(519, 440, "WHITE\n   WIN!");
-			BoardController.gameResult.setFont(Font.font("Georgia", FontWeight.BOLD, 36));
-			BoardController.gameResult.setVisible(true);
-		}
+			BoardController.whiteWin.setVisible(true);
 		System.out.println("Game is over~");
+		}
 	}
 }

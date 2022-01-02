@@ -61,7 +61,7 @@
       <Group fx:id="whiteTurn" layoutX="43.0" layoutY="365.0">
          <children>
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f4f4f4" height="33.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.3" width="200.0" />
-            <Label alignment="CENTER" prefHeight="34.0" prefWidth="202.0" text="YOUR TURN" textAlignment="CENTER">
+            <Label alignment="CENTER" prefHeight="34.0" prefWidth="202.0" text="CURRENT TURN" textAlignment="CENTER">
                <font>
                   <Font name="Calibri" size="14.0" />
                </font>
