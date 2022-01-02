@@ -80,21 +80,20 @@ public class BoardController implements Initializable{
         maskBoard.setVisible(true);
         pane.getChildren().add(maskBoard);
         
-        draw = new Text(525, 470, "DRAW");
+        draw = new Text(524, 470, "DRAW");
         draw.setFont(Font.font("Georgia", FontWeight.BOLD, 36));
         draw.setVisible(false);
         pane.getChildren().add(draw);
-        blackWin = new Text(522, 440, "BLACK\n  WIN!");
+        blackWin = new Text(522, 448, "BLACK\n  WIN!");
         blackWin.setFont(Font.font("Georgia", FontWeight.BOLD, 36));
         blackWin.setVisible(false);
         pane.getChildren().add(blackWin);
-        whiteWin = new Text(519, 440, "WHITE\n   WIN!");
+        whiteWin = new Text(516, 448, "WHITE\n   WIN!");
         whiteWin.setFont(Font.font("Georgia", FontWeight.BOLD, 36));
         whiteWin.setVisible(false);
         pane.getChildren().add(whiteWin);
 
         s_blackProgress = blackProgress;   
-        setTurnVisibility(true, false);
     }
     
 	public static void markBlackPiece(Piece[] board) {
