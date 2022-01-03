@@ -17,9 +17,8 @@ public class Game {
 	public enum GamePhase {Opening, Middle, Ending};
 	public static final int MIN_PIECES_ON_BOARD = 3;
 	public static int turnCounter = 0; //Count playing turns
+	public static GamePhase currentPhase = GamePhase.Opening;
 	
-	private static GamePhase currentPhase = GamePhase.Opening;
-	private static Board board = Main.getBoard();
 	private static FutureTask<Void> updateUITask;
 	
 	public static int getTurnCounter() {
@@ -29,45 +28,39 @@ public class Game {
 	public static void setTurnCounter(int turnCounter) {
 		Game.turnCounter = turnCounter;
 	}
-
-
-	public static GamePhase getCurrentPhase() {
-		return currentPhase;
-	}
 	
-	public static void updateGamePhase(Piece[] gameboard, Piece[] white, Piece[] black) {
+	public static void updateGamePhase(Board board) {
 		switch (currentPhase) {
 		case Opening:
 			updateUITask = new FutureTask<Void>(() -> {
-				BoardController.maskBoard.toFront();
-				BoardController.maskWhitePieces.toBack();
+				BoardController.setMaskVisivility(true, false);
 			}, null);
-			if (board.checkAllPiecesOnBoard(white) && board.checkAllPiecesOnBoard(black)) {
+			if (board.checkAllPiecesOnBoard(Color.WHITE) && board.checkAllPiecesOnBoard(Color.BLACK)) {
 				currentPhase = GamePhase.Middle;
 				updateUITask = new FutureTask<Void>(() -> {
-					BoardController.maskBoard.toBack();
+					BoardController.setMaskVisivility(false, false);
 				}, null);
 			}
 			break;
 		case Middle:
 			updateUITask = new FutureTask<Void>(() -> {
-				BoardController.maskBoard.toBack();
+				BoardController.setMaskVisivility(false, false);
 			}, null);
-			if (board.getNumberOfPiecesOnBoard(gameboard, Color.WHITE) == MIN_PIECES_ON_BOARD 
-					|| board.getNumberOfPiecesOnBoard(gameboard, Color.BLACK) == MIN_PIECES_ON_BOARD)
+			if (board.getNumberOfPiecesOnBoard(Color.WHITE) == MIN_PIECES_ON_BOARD 
+					|| board.getNumberOfPiecesOnBoard(Color.BLACK) == MIN_PIECES_ON_BOARD)
 				currentPhase = GamePhase.Ending;
 			break;
 		case Ending:
 			updateUITask = new FutureTask<Void>(() -> {
-				BoardController.maskBoard.toBack();
+				BoardController.setMaskVisivility(false, false);
 			}, null);
-			if (board.getNumberOfPiecesOnBoard(gameboard, Color.WHITE) < MIN_PIECES_ON_BOARD
-					|| board.getNumberOfPiecesOnBoard(gameboard, Color.BLACK) < MIN_PIECES_ON_BOARD
+			if (board.getNumberOfPiecesOnBoard(Color.WHITE) < MIN_PIECES_ON_BOARD
+					|| board.getNumberOfPiecesOnBoard(Color.BLACK) < MIN_PIECES_ON_BOARD
 					|| Board.stepCnt >= 10) {
 				updateUITask = new FutureTask<Void>(() -> {
-					BoardController.maskBoard.toFront();
+					BoardController.setMaskVisivility(true, false);
 				}, null);
-				gameOver(gameboard);
+				gameOver(board);
 			}
 			break;
 		default:
@@ -87,27 +80,27 @@ public class Game {
 		}
 	}
 	
-	public static boolean isGameOver(Piece[] gameboard) {
-		if (currentPhase == GamePhase.Ending && (board.getNumberOfPiecesOnBoard(gameboard, Color.WHITE) < MIN_PIECES_ON_BOARD
-			|| board.getNumberOfPiecesOnBoard(gameboard, Color.BLACK) < MIN_PIECES_ON_BOARD
+	public static boolean isGameOver(Board board) {
+		if (currentPhase == GamePhase.Ending && (board.getNumberOfPiecesOnBoard(Color.WHITE) < MIN_PIECES_ON_BOARD
+			|| board.getNumberOfPiecesOnBoard(Color.BLACK) < MIN_PIECES_ON_BOARD
 			|| Board.stepCnt >= 10)) {
-			BoardController.maskBoard.toFront();
-			gameOver(gameboard);
+			BoardController.setMaskVisivility(false, false);
+			gameOver(board);
 			return true;
 		}
 		return false;
 	}
 
-	private static void gameOver(Piece[] gameboard) {
-		// TODO Show winner/draw screen
+	private static void gameOver(Board board) {
+		// Show winner/draw screen
         if(Board.stepCnt >= 10){
-            BoardController.draw.setVisible(true);
+			BoardController.setGameResultVisibility(true, false, false);
         }
-        else if(board.getNumberOfPiecesOnBoard(gameboard, Color.WHITE) < MIN_PIECES_ON_BOARD){
-            BoardController.blackWin.setVisible(true);
+        else if(board.getNumberOfPiecesOnBoard(Color.WHITE) < MIN_PIECES_ON_BOARD){
+			BoardController.setGameResultVisibility(false, false, true);
         }
         else{
-            BoardController.whiteWin.setVisible(true);
+			BoardController.setGameResultVisibility(false, true, false);
         }
         System.out.println("Game is over~");
 	}

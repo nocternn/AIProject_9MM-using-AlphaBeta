@@ -1,11 +1,8 @@
 package board;
 
-import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
-
 import game.Game;
 import game.Game.GamePhase;
-import helper.MoveListener;
+import helper.EventListener;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -14,26 +11,15 @@ import javafx.scene.shape.StrokeType;
 public class Piece extends Circle implements Cloneable {
     boolean marked = false; // Piece is marked for deletion
     
-    public int initialPosition = -1; // Current position on game board [0,23]
+    public int indexOnBoard = -1; // Current position on game board [0,23]
     public boolean active = true; //Check if that piece is still available to play
     
-    private ArrayList<MoveListener> listeners = new ArrayList<MoveListener>();
+    private EventListener listener;
     private double initialX, initialY;
     private int index; // Index when generate pieces, stay constant for entire game
-
-    public Piece clone() {
-    	Piece piece = this;
-    	try {
-			piece = (Piece) super.clone();
-		} catch (CloneNotSupportedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}  
-    	return piece;
-    }
     
-    public Piece(Color fill, double x, double y, Color stroke, int index, MoveListener listener) {
-		this.setFill(fill);
+    public Piece(Color player, double x, double y, Color stroke, int index, EventListener listener) {
+		this.setFill(player);
 		this.setCenterX(x);
 		this.setCenterY(y);
 		this.setRadius(14.0);
@@ -44,30 +30,50 @@ public class Piece extends Circle implements Cloneable {
 		this.initialX = x;
 		this.initialY = y;
 		this.index = index;
-		this.listeners.add(listener);
+		this.listener = listener;
 		
-
 		this.setOnMousePressed(evt -> handleMousePress(evt));
-		if (fill == Color.WHITE) {
+		if (player == Color.WHITE) {
 			this.setOnMouseDragged(evt -> handleMouseDrag(evt));
 			this.setOnMouseReleased(evt -> handleMouseRelease(evt));
 		}
     }
     
+    public Piece(Color player, int index) {
+		this.setFill(player);
+		this.indexOnBoard = index;
+    }
+    
+    @Override
+	public Object clone() {
+    	Piece piece = this;
+	    try {
+	    	piece = (Piece) super.clone();
+	    } catch (CloneNotSupportedException e) { }
+	    return piece;
+	}
+    
     public int getIndex() {
     	return this.index;
     }
     
-    public Color getColor() {
+    public Color getPlayer() {
     	return (Color) this.getFill();
     }
     
-    public boolean deletePiece() {
-    	if (marked) {
-	    	this.active = false;
-	    	this.setVisible(false);
-    	}
-    	return marked;
+    public void delete(boolean updateIndex, boolean updateUI) {
+    	this.active = false;
+    	this.marked = false;
+		if (updateIndex)
+			this.indexOnBoard = -1;
+		if (updateUI)
+			this.setVisible(false);
+    }
+    public void restore(int index, boolean updateUI) {
+    	this.active = true;
+		this.indexOnBoard = index;
+		if (updateUI)
+			this.setVisible(true);
     }
     
 	// Mouse interactions
@@ -75,11 +81,9 @@ public class Piece extends Circle implements Cloneable {
 		if ((Color) this.getFill() == Color.WHITE) {
 			this.setFill(Color.YELLOW);
 		} else {
-	    	if (deletePiece()) {
-	    		this.marked = false;
-                for (MoveListener listener : listeners)
-                	listener.removedBlackPiece(this.initialPosition);
-                this.initialPosition = -1;
+	    	if (this.marked) {
+	    		delete(false, true);
+                this.listener.removedBlackPiece(this.indexOnBoard);
 	    	}
 		}
     }
@@ -88,13 +92,13 @@ public class Piece extends Circle implements Cloneable {
     	this.setCenterX(evt.getX());
     	this.setCenterY(evt.getY());
     	
-    	if (Game.getCurrentPhase() == GamePhase.Opening || Game.getCurrentPhase() == GamePhase.Ending) {
+    	if (Game.currentPhase == GamePhase.Opening || Game.currentPhase == GamePhase.Ending) {
     		for(int i=0;i<24;i++) 
     			BoardController.boardPosition.get(i).setFill(Color.rgb(84, 255, 135));
     	}
     	else {
     		for (int i=0; i<24; i++) {
-    			if (Board.isAdjacent(this.initialPosition,i) == true || i == this.initialPosition)
+    			if (Board.isAdjacent(this.indexOnBoard,i) == true || i == this.indexOnBoard)
     				BoardController.boardPosition.get(i).setFill(Color.rgb(84, 255, 135));
     		}
     	}
@@ -104,29 +108,22 @@ public class Piece extends Circle implements Cloneable {
     	this.setFill(Color.WHITE);
         double releaseX = evt.getSceneX();
         double releaseY = evt.getSceneY();
-        System.out.println("Drop location: " + releaseX + " " + releaseY);
         for(int i=0; i<BoardController.boardPosition.size();i++){
             double tempX = BoardController.boardPosition.get(i).getCenterX();
             double tempY = BoardController.boardPosition.get(i).getCenterY();
             // If the piece was release close enough to a valid position then snap it to that position
             if(releaseX >= tempX-50 && releaseX <= tempX+50 && releaseY >= tempY-50 && releaseY <= tempY+50) {
-            	// If the closest position already holds a piece then skip
-            	if (Board.isOccupied(i))
-            		continue;
-            	// In mid-game, if the closest position is not adjacent to the old position then skip
-            	else if (Game.getCurrentPhase() == GamePhase.Middle && Board.isAdjacent(this.initialPosition,i) == false)
-            		continue;
-                System.out.println("Snapped " + this.index + " to: " + i + " " + tempX + " " +  tempY);
-                for(int j=0;j<BoardController.boardPosition.size();j++) BoardController.boardPosition.get(j).setFill(Color.TRANSPARENT);
                 // Notify listeners that a white piece has been moved
-                for (MoveListener listener : listeners)
-                	listener.movedWhitePiece(this.index, this.initialPosition, i);
+                if (!this.listener.movedWhitePiece(this, i))
+                	continue;
+                for(int j=0;j<BoardController.boardPosition.size();j++) BoardController.boardPosition.get(j).setFill(Color.TRANSPARENT);
                 // Set new piece origin
                 this.initialX = tempX;
                 this.initialY = tempY;
-                this.initialPosition = i;
                 break;
             }
+            // If the position of the piece doesn't change after drag
+            else for(int j=0;j<BoardController.boardPosition.size();j++) BoardController.boardPosition.get(j).setFill(Color.TRANSPARENT);
         }
     	this.setCenterX(initialX);
     	this.setCenterY(initialY);

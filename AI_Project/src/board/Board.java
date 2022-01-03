@@ -1,16 +1,13 @@
 package board;
 
-import java.util.ArrayList;
-
-import game.Algorithms;
+import game.AIPlayer;
 import game.Game;
 import game.Game.GamePhase;
 import game.Move;
-import helper.MoveListener;
+import helper.EventListener;
 import javafx.scene.paint.Color;
-import main.Main;
 
-public class Board implements MoveListener {
+public class Board implements EventListener {
 	public static final int[][] possibleMills = {
 			{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}, {12, 13, 14}, {15, 16, 17}, {18, 19, 20}, {21, 22, 23}, 
 			{0, 9, 21}, {3, 10, 18}, {6, 11, 15}, {1, 4, 7}, {16, 19, 22}, {8, 12, 17}, {5, 13, 20}, {2, 14, 23}
@@ -20,78 +17,61 @@ public class Board implements MoveListener {
 			{3, 9, 11, 18}, {6, 10, 15}, {8, 13, 17}, {5, 12, 14, 20}, {2, 13, 23}, {11, 16}, {15, 17, 19}, {12, 16},
 			{10, 19}, {16, 18, 20, 22}, {13, 19}, {9, 22}, {19, 21, 23}, {14 ,22}
 	}; //Adjacent play positions of piece[i]
+	public static int SIZE_POSSIBLE_MILLS = 16;
+	public static int SIZE_MILL = 3;
+	public static int SIZE_PIECES = 9;
+	public static int SIZE_BOARD = 24;
 	public static int stepCnt=0;
 	
-	private static Piece[] whitePieces = new Piece[9];
-	private static Piece[] blackPieces = new Piece[9];
-	private static Piece[] board = new Piece[24];
+	public Thread blackTurnThread;
+	
+	private Piece[] whitePieces = new Piece[SIZE_PIECES];
+	private Piece[] blackPieces = new Piece[SIZE_PIECES];
+	private Piece[] board = new Piece[SIZE_BOARD];
 	
 	public Board() {
 		initBoard();
 	}
-	
-	public Piece[] getBoard() {
-		return board;
+	public Board(Board original) {
+		Piece[] whitePieces = original.getWhitePieces();
+		Piece[] blackPieces = original.getBlackPieces();
+		Piece[] board = original.getBoard();
+		for (int i = 0; i < SIZE_PIECES; i++)
+			this.whitePieces[i] = (Piece) whitePieces[i].clone();
+		for (int i = 0; i < SIZE_PIECES; i++)
+			this.blackPieces[i] = (Piece) blackPieces[i].clone();
+		for (int i = 0; i < SIZE_BOARD; i++)
+			if (board[i] != null)
+				this.board[i] = (Piece) board[i].clone();
 	}
 
-	public Piece[] getWhitePieces() {
-		return whitePieces;
-	}
-
-	public Piece[] getBlackPieces() {
-		return blackPieces;
-	}
-
-	public int getNumberOfPiecesOnBoard(Piece[] board, Color player) {
+	public int getNumberOfPiecesOnBoard(Color player) {
 		int count = 0;
-		for (Piece piece : board) {
-			if (piece != null && piece.getColor() == player)
+		for (Piece piece : this.board) {
+			if (piece != null && piece.getPlayer() == player)
 				count++;
 		}
 		return count;
 	}
 	
-	public ArrayList<Move> getPossibleMoves(Piece[] board, Piece[] pieces) {
-		// Get all of the possible next moves
-		ArrayList<Move> possibleMoves = new ArrayList<Move>();
-		GamePhase currentPhase = Game.getCurrentPhase();
-		
-		for (Piece piece : pieces) {
-			if (!piece.active)
-				continue;
-			switch (currentPhase) {
-				case Opening:
-					// In opening phase, player can move a piece from outside play-board to anywhere that is not occupied
-					if (piece.initialPosition < 0) {
-						for (int i = 0; i < 24; i++) {
-							if (!isOccupied(board, i)) {							
-								possibleMoves.add(new Move(piece, i));
-							}
-						}
-					}
-					break;
-				case Middle:
-					// In middle phases, player can only move to adjacent points of a piece
-					if (piece.initialPosition >= 0)
-						for (int pos: possibleSlides[piece.initialPosition]) {
-							if (!isOccupied(board, pos)) {
-								possibleMoves.add(new Move(piece, pos));
-							}
-						}
-					break;
-				case Ending:
-					// In end phase, player can move a piece to anywhere that is not occupied
-					for (int i = 0; i < 24; i++) {
-						if (!isOccupied(board, i))
-							possibleMoves.add(new Move(piece, i));
-					}
-					break;
-			}
-		}
-		return possibleMoves;
+	public Piece[] getWhitePieces() {
+		return this.whitePieces;
+	}
+	public Piece[] getBlackPieces() {
+		return this.blackPieces;
+	}
+	public Piece[] getBoard() {
+		return this.board;
+	}
+
+	public Piece getPieceFromPiecesList(int indexPiece, Color player) {
+		if (player == Color.WHITE)
+			return whitePieces[indexPiece];
+		else
+			return blackPieces[indexPiece];
 	}
 	
-	public boolean isMill(Piece[] board, Color player, int currentPosition) {
+	public boolean isMill(Color player, int currentPosition) {
 		for (int[] possibleMill : possibleMills) {
 			// If one of the positions in evaluated possible mill is empty then skip
 			if (board[possibleMill[0]] == null || board[possibleMill[1]] == null || board[possibleMill[2]] == null)
@@ -100,7 +80,7 @@ public class Board implements MoveListener {
 			if (!(currentPosition == possibleMill[0] || currentPosition == possibleMill[1] || currentPosition == possibleMill[2]))
 				continue;
 			// If the evaluated possible mill does not contain pieces of the same color then skip
-			if (!(board[possibleMill[0]].getColor() == player && board[possibleMill[1]].getColor() == player && board[possibleMill[2]].getColor() == player))
+			if (!(board[possibleMill[0]].getPlayer() == player && board[possibleMill[1]].getPlayer() == player && board[possibleMill[2]].getPlayer() == player))
 				continue;
 			return true; // Mill was found
 		}
@@ -114,102 +94,254 @@ public class Board implements MoveListener {
 		return false;
 	}
 
-	public static boolean isOccupied(int position) {
-		if (board[position] == null)
-			return false;
-		return true;
-	}
-	public boolean isOccupied(Piece[] board, int position) {
+	public boolean isOccupied(int position) {
 		if (board[position] == null)
 			return false;
 		return true;
 	}
 
-	public int countMill(Piece[] gameboard, Color player) {
-		int count = 0;
-		for (int[] mill : possibleMills) {
-			if (isMill(gameboard, player, mill[0])) {
-				count++;
-			}
-		}
-		return count;
+	public boolean isActive(int position, Color player) {
+		if (player == Color.WHITE && whitePieces[position].active)
+			return true;
+		if (player == Color.BLACK && blackPieces[position].active)
+			return true;
+		return false;
 	}
 
-	public void movePiece(Piece[] gameboard, Piece[] pieces, Move move) {
-		// Remove piece from old position
-		if (move.piece.initialPosition >= 0)
-			gameboard[move.piece.initialPosition] = null;
-		// Set piece in new position
-		pieces[move.piece.getIndex()].initialPosition = move.newPositionOnBoard;
-		gameboard[move.newPositionOnBoard] = pieces[move.piece.getIndex()];
-	}
-	
-	public int[] findAlmostMill(Piece[] board, Color player) {
-		for (int[] mill : possibleMills) {
-			int count = 0;
-			for (int position : mill) {
-				if (board[position] != null && board[position].getColor() == player)
-					count++;
-			}
-			if (count == 2)
-				return mill;
-		}
-		return null;
+	public boolean checkPieceInBoard(int indexPiece, Color player) {
+		if (player == Color.WHITE && whitePieces[indexPiece].indexOnBoard == -1)
+			return false;
+		if (player == Color.BLACK && blackPieces[indexPiece].indexOnBoard == -1)
+			return false;
+		return true;
 	}
 
-	public boolean checkAllPiecesOnBoard(Piece[] pieces) {
+	public boolean checkAllPiecesOnBoard(Color player) {
+		Piece[] pieces;
+		if (player == Color.WHITE)
+			pieces = whitePieces;
+		else
+			pieces = blackPieces;
 		for (Piece piece : pieces)
-			if (piece.active && piece.initialPosition == -1)
+			if (piece.active && piece.indexOnBoard == -1)
 				return false;
 		return true;
 	}
+
+	public void applyMove(Move move, Color player) {
+		// Remove piece from old position
+		if (move.srcIndexOnBoard >= 0)
+			board[move.srcIndexOnBoard] = null;
+		// Set piece in new position
+		if (player == Color.WHITE) {
+			whitePieces[move.indexPiece].indexOnBoard = move.destIndexOnBoard;
+			board[move.destIndexOnBoard] = whitePieces[move.indexPiece];
+			
+			if (move.indexRemovedPieceOnBoard != -1) {
+				blackPieces[move.indexRemovedPiece].delete(true, false);
+				board[move.indexRemovedPieceOnBoard] = null;
+			}
+		} else {
+			blackPieces[move.indexPiece].indexOnBoard = move.destIndexOnBoard;
+			board[move.destIndexOnBoard] = blackPieces[move.indexPiece];
+			
+			if (move.indexRemovedPieceOnBoard != -1) {
+				whitePieces[move.indexRemovedPiece].delete(true, false);
+				board[move.indexRemovedPieceOnBoard] = null;
+			}
+		}
+	}
+	public void undoMove(Move move, Color player) {
+		// Remove piece from new position
+		board[move.destIndexOnBoard] = null;
+		// Set piece in old position
+		if (player == Color.WHITE) {
+			whitePieces[move.indexPiece].indexOnBoard = move.srcIndexOnBoard;
+			if (move.srcIndexOnBoard >= 0)
+				board[move.srcIndexOnBoard] = whitePieces[move.indexPiece];
+			// Restore deleted piece
+			if (move.indexRemovedPieceOnBoard != -1) {
+				blackPieces[move.indexRemovedPiece].restore(move.indexRemovedPieceOnBoard, false);
+				board[move.indexRemovedPieceOnBoard] = blackPieces[move.indexRemovedPiece];
+			}
+		} else {
+			blackPieces[move.indexPiece].indexOnBoard = move.srcIndexOnBoard;
+			if (move.srcIndexOnBoard >= 0)
+				board[move.srcIndexOnBoard] = blackPieces[move.indexPiece];
+			// Restore deleted piece
+			if (move.indexRemovedPieceOnBoard != -1) {
+				whitePieces[move.indexRemovedPiece].restore(move.indexRemovedPieceOnBoard, false);
+				board[move.indexRemovedPieceOnBoard] = whitePieces[move.indexRemovedPiece];
+			}
+		}
+	}
+	
+	public int evaluate(Color player, Color opponent) {
+		int score = 0;
+		int R1_numPlayerMills = 0, R1_numOppMills = 0;
+		int R2_numPlayerTwoPieceConf = 0, R2_numOppTwoPieceConf = 0;
+
+		for(int indexMill = 0; indexMill < SIZE_POSSIBLE_MILLS; indexMill++) {
+			int playerPieces = 0, emptyCells = 0, opponentPieces = 0;
+
+			int[] mill = possibleMills[indexMill];
+			for(int indexInMill = 0; indexInMill < possibleMills[indexMill].length; indexInMill++) {
+				if(board[mill[indexInMill]] == null) {
+					emptyCells++;
+				} else if(board[mill[indexInMill]].getPlayer() == player) {
+					playerPieces++;
+				} else {
+					opponentPieces++;
+				}
+			}
+
+			if(playerPieces == 3) {
+				R1_numPlayerMills++;
+			} else if(playerPieces == 2 && emptyCells == 1) {
+				R2_numPlayerTwoPieceConf++;
+			} else if(playerPieces == 1 && emptyCells == 2) {
+				score += 1;
+			} else if(opponentPieces == 3) {
+				R1_numOppMills++;
+			} else if(opponentPieces == 2 && emptyCells == 1) {
+				R2_numOppTwoPieceConf++;
+			} else if(opponentPieces == 1 && emptyCells == 2) {
+				score += -1;
+			}
+		}
+		
+		for (int indexBoard = 0; indexBoard < SIZE_BOARD; indexBoard++) {
+			if(indexBoard == 4 || indexBoard == 10 || indexBoard == 13 || indexBoard == 19) {
+				if (board[indexBoard] == null)
+					score -= 2;
+				else if (board[indexBoard].getPlayer() == player)
+					score += 2;
+			} else if(indexBoard == 1 || indexBoard == 9 || indexBoard == 14 || indexBoard == 22
+						|| indexBoard == 7 || indexBoard == 11 || indexBoard == 12 || indexBoard == 16) {
+				if (board[indexBoard] == null)
+					score -= 1;
+				else if (board[indexBoard].getPlayer() == player)
+					score += 1;
+			}
+		}
+		
+		int coef = 0;
+		// number of mills
+		switch (Game.currentPhase) {
+		case Opening:
+			coef = 80;
+			break;
+		case Middle:
+			coef = 120;
+			break;
+		case Ending:
+			coef = 180;
+			break;
+		}
+		score += coef*R1_numPlayerMills;
+		score -= coef*R1_numOppMills;
+
+		// number of pieces
+		switch (Game.currentPhase) {
+		case Opening:
+			coef = 10;
+			break;
+		case Middle:
+			coef = 8;
+			break;
+		case Ending:
+			coef = 6;
+			break;
+		}
+		score += coef*getNumberOfPiecesOnBoard(player);
+		score -= coef*getNumberOfPiecesOnBoard(opponent);
+
+		// number of 2 pieces and 1 free spot configuration
+		switch (Game.currentPhase) {
+		case Opening:
+			coef = 12;
+			break;
+		default:
+			coef = 10;
+			break;
+		}
+		score += coef*R2_numPlayerTwoPieceConf;
+		score -= coef*R2_numOppTwoPieceConf;
+		
+		switch (Game.currentPhase) {
+		case Opening:
+			coef = 10;
+			break;
+		default:
+			coef = 25;
+			break;
+		}
+		
+		return score;
+	}
 	
 	@Override
-	public void movedWhitePiece(int pieceIndex, int initialPosition, int newPosition) {
+	public boolean movedWhitePiece(Piece movedPiece, int newPosition) {
+		// If the closest position already holds a piece then skip
+    	if (isOccupied(newPosition))
+    		return false;
+    	// In mid-game, if the closest position is not adjacent to the old position then skip
+    	else if (Game.currentPhase == GamePhase.Middle && isAdjacent(movedPiece.indexOnBoard, newPosition) == false)
+    		return false;
 		// Delete piece at old position
-		if (initialPosition >= 0) {
-			board[initialPosition] = null;
+		if (movedPiece.indexOnBoard >= 0) {
+			board[movedPiece.indexOnBoard] = null;
 		}
 		// Add piece at new position
-		whitePieces[pieceIndex].initialPosition = newPosition;
-		board[newPosition] = whitePieces[pieceIndex];
+        movedPiece.indexOnBoard = newPosition;
+		board[newPosition] = movedPiece;
 		// Count turn
-		if(Game.getCurrentPhase() != GamePhase.Opening)
+		if(Game.currentPhase != GamePhase.Opening)
 			stepCnt++;
 		// Check for mill
-		BoardController.maskWhitePieces.toFront();
-		BoardController.maskBoard.toFront();
-		if (isMill(board, Color.WHITE, newPosition)) {
+		BoardController.setMaskVisivility(true, true);
+		if (isMill(Color.WHITE, newPosition)) {
 			BoardController.millStatus.setVisible(true);
-			BoardController.bringPiecesToFront(board, Color.BLACK);
-			BoardController.markBlackPiece(board);
+			BoardController.bringPiecesToFront(this, Color.BLACK);
+			BoardController.markBlackPiece(this);
 			stepCnt = 0;
-			return;
+			return true;
 		}
 		blackTurn();
+		return true;
 	}
 	
 	@Override
 	public void removedBlackPiece(int positionOnBoard) {
 		// Remove piece from board memory
+		board[positionOnBoard].indexOnBoard = -1;
 		board[positionOnBoard] = null;
 		// Unmark pieces
-		BoardController.unmarkBlackPiece(board);
+		BoardController.unmarkBlackPiece(this);
 		BoardController.millStatus.setVisible(false);
-		BoardController.maskBoard.toBack();
+		BoardController.setMaskVisivility(false, false);
 		blackTurn();
+	}
+	
+	public void endThread() {
+		if (blackTurnThread != null) {
+			blackTurnThread.interrupt();
+			blackTurnThread = null;
+		}
 	}
 	
 	private void blackTurn() {
 		// If white won, stop the game
-		if (Game.isGameOver(board))
+		if (Game.isGameOver(this))
 			return;
 		// Else it's black's turn to move
 		BoardController.setTurnVisibility(false, true);
-		new Thread(() -> {
-			moveBlackPiece(board, whitePieces, blackPieces);
-			Game.updateGamePhase(board, whitePieces, blackPieces);
-		}).start();
+		blackTurnThread = new Thread(() -> {
+			moveBlackPiece();
+			Game.updateGamePhase(this);
+			endThread();
+		});
+		blackTurnThread.start();
 	}
 	
 	private void initBoard() {
@@ -227,57 +359,22 @@ public class Board implements MoveListener {
 		}
 	}
 	
-	private void moveBlackPiece(Piece[] board, Piece[] white, Piece[] black) {
+	private void moveBlackPiece() {
 		// Get next move of AI
-		Move nextMove = Main.getAlgorithms().getMove(board, white, black);
-		// Get move data
-		int index = nextMove.piece.getIndex();
-		int oldPosition = nextMove.piece.initialPosition;
-		int newPosition = nextMove.newPositionOnBoard;
+		AIPlayer blackPlayer = new AIPlayer(new Board(this));
+		Move move = blackPlayer.getBestMove();
 		// Execute move
-		black[index].setCenterX(BoardController.boardPosition.get(newPosition).getCenterX());
-		black[index].setCenterY(BoardController.boardPosition.get(newPosition).getCenterY());
-		black[index].initialPosition = newPosition;
-		board[newPosition] = blackPieces[index];
-		if (oldPosition >= 0)
-			board[oldPosition] = null;
-		// Check for new mill
-		if (isMill(board, Color.BLACK, newPosition)) {
-			if (nextMove.opponentPiece != null) {
-				// Remove same piece as decided in minimax
-				board[nextMove.opponentPiece.initialPosition] = null;
-				white[nextMove.opponentPiece.getIndex()].deletePiece();
-			} else {
-				// Delete an opponent piece on board
-				int[] almostMill = findAlmostMill(board, Color.WHITE);
-				if (almostMill != null) {
-					// If there exists some almost mill then delete one of its pieces
-					for (int position : almostMill) {
-						if (board[position] != null && !isMill(board, Color.WHITE, position)) {
-							deletePiece(white, board[position].getIndex());
-							board[position] = null;
-							break;
-						}
-					}
-				} else {
-					// If there is no almost mill then delete the first piece found on board
-					for (int position = 0; position < 24; position++) {
-						if (board[position] != null && !isMill(board, Color.WHITE, position) && board[position].getColor() == Color.WHITE) {
-							deletePiece(white, board[position].getIndex());
-							board[position] = null;
-							break;
-						}
-					}
-				}
-			}
+		blackPieces[move.indexPiece].setCenterX(BoardController.boardPosition.get(move.destIndexOnBoard).getCenterX());
+		blackPieces[move.indexPiece].setCenterY(BoardController.boardPosition.get(move.destIndexOnBoard).getCenterY());
+		if (move.srcIndexOnBoard >= 0)
+			board[move.srcIndexOnBoard] = null;
+		blackPieces[move.indexPiece].indexOnBoard = move.destIndexOnBoard;
+		board[move.destIndexOnBoard] = blackPieces[move.indexPiece];
+		// Remove piece upon mill
+		if (move.indexRemovedPieceOnBoard != -1 && isMill(Color.BLACK, move.destIndexOnBoard)) {
+			whitePieces[move.indexRemovedPiece].delete(true, true);
+			board[move.indexRemovedPieceOnBoard] = null;
 		}
 		BoardController.setTurnVisibility(true, false);
-	}
-	
-	private void deletePiece(Piece[] pieces, int index) {
-		pieces[index].marked = true;
-		pieces[index].deletePiece();
-		pieces[index].initialPosition = -1;
-		pieces[index].marked = false;
 	}
 }
