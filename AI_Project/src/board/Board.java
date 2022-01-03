@@ -87,7 +87,7 @@ public class Board implements EventListener {
 		return false; // No mill found
 	}
 	
-	public static boolean isAdjacent(int initialPosition, int newPosition) {
+	public boolean isAdjacent(int initialPosition, int newPosition) {
 		for (int i: possibleSlides[initialPosition]) {
 			if (newPosition == i) return true;
 		}
@@ -286,8 +286,11 @@ public class Board implements EventListener {
     	if (isOccupied(newPosition))
     		return false;
     	// In mid-game, if the closest position is not adjacent to the old position then skip
-    	else if (Game.currentPhase == GamePhase.Middle && isAdjacent(movedPiece.indexOnBoard, newPosition) == false)
+    	else if (Game.currentPhase == GamePhase.Middle && !isAdjacent(movedPiece.indexOnBoard, newPosition))
     		return false;
+    	else if (Game.currentPhase == GamePhase.Ending && !isAdjacent(movedPiece.indexOnBoard, newPosition)
+    			&& getNumberOfPiecesOnBoard(Color.WHITE) >= Game.MIN_PIECES_ON_BOARD)
+			return false;
 		// Delete piece at old position
 		if (movedPiece.indexOnBoard >= 0) {
 			board[movedPiece.indexOnBoard] = null;
