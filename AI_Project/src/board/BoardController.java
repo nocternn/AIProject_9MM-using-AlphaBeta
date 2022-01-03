@@ -144,7 +144,7 @@ public class BoardController implements Initializable{
             s_blackProgress.setStyle("-fx-accent: black;");
         }
         else {
-            s_blackProgress.setStyle("-fx-accent: white;");
+            s_blackProgress.setStyle("-fx-accent: transparent;");
         }
 	}
 	
@@ -165,15 +165,6 @@ public class BoardController implements Initializable{
 		s_whiteWin.setVisible(white);
 		s_blackWin.setVisible(black);
 	}
-	
-	public static void controlProgress(boolean Active){
-        if(Active){
-            s_blackProgress.setStyle("-fx-accent: black;");
-        }
-        else{
-            s_blackProgress.setStyle("-fx-accent: transparent;");
-        }
-    }
 	
 	public static int getAlgorithmDepth() {
 		switch(s_algoChoiceBox.getSelectionModel().getSelectedIndex()) {
