@@ -15,13 +15,13 @@ public class Main extends Application{
 	Board board;
 
 	public void start(Stage primaryStage) throws Exception {
-		Pane root = FXMLLoader.load(getClass().getResource("../board/Board.fxml"));
+		Pane root = FXMLLoader.load(getClass().getResource("/board/Board.fxml"));
 		scene = new Scene(root, 1200, 800);
 		
 		primaryStage.setScene(scene);
 		primaryStage.setTitle("Nine Men's Morris");
 		primaryStage.setResizable(false);
-		primaryStage.getIcons().add(new Image("icon.png"));
+		primaryStage.getIcons().add(new Image("/images/icon.png"));
 		primaryStage.show();
 		
 		board = new Board();
