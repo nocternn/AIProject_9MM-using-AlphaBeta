@@ -44,6 +44,10 @@ public class Main extends Application{
 			// Set turn to user
 			BoardController.setTurnVisibility(true, false);
 			BoardController.setGameResultVisibility(false, false, false);
+			BoardController.millStatus.setVisible(false);
+			for (int i=0; i<24; i++) {
+				BoardController.crossPosition.get(i).setVisible(false);
+			}
 			// Reset phase
 			Game.currentPhase = Game.GamePhase.Opening;
 		});
