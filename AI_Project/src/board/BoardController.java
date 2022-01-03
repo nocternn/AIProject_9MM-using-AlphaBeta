@@ -160,6 +160,7 @@ public class BoardController implements Initializable{
 	}
 	
 	public static void setGameResultVisibility(boolean draw, boolean white, boolean black) {
+		millStatus.setVisible(false);
 		s_draw.setVisible(draw);
 		s_whiteWin.setVisible(white);
 		s_blackWin.setVisible(black);
