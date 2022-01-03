@@ -5,13 +5,8 @@ import java.util.concurrent.FutureTask;
 
 import board.Board;
 import board.BoardController;
-import board.Piece;
 import javafx.application.Platform;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
-import main.Main;
 
 public class Game {
 	public enum GamePhase {Opening, Middle, Ending};
