@@ -97,6 +97,7 @@ public class Game {
         else{
 			BoardController.setGameResultVisibility(false, true, false);
         }
+        BoardController.setMaskVisivility(true, false);
         System.out.println("Game is over~");
 	}
 }
