@@ -290,7 +290,7 @@ public class Board implements EventListener {
     	else if (Game.currentPhase == GamePhase.Middle && !isAdjacent(movedPiece.indexOnBoard, newPosition))
     		return false;
     	else if (Game.currentPhase == GamePhase.Ending && !isAdjacent(movedPiece.indexOnBoard, newPosition)
-    			&& getNumberOfPiecesOnBoard(Color.WHITE) >= Game.MIN_PIECES_ON_BOARD)
+    			&& getNumberOfPiecesOnBoard(Color.WHITE) > Game.MIN_PIECES_ON_BOARD)
 			return false;
 		// Delete piece at old position
 		if (movedPiece.indexOnBoard >= 0) {

@@ -35,6 +35,12 @@ public class Game {
 			if (board.getNumberOfPiecesOnBoard(Color.WHITE) == MIN_PIECES_ON_BOARD 
 					|| board.getNumberOfPiecesOnBoard(Color.BLACK) == MIN_PIECES_ON_BOARD)
 				currentPhase = GamePhase.Ending;
+			if(board.stepCnt >= 30) {
+				updateUITask = new FutureTask<Void>(() -> {
+					BoardController.setMaskVisivility(true, false);
+				}, null);
+				gameOver(board);
+			}
 			break;
 		case Ending:
 			updateUITask = new FutureTask<Void>(() -> {
@@ -42,7 +48,7 @@ public class Game {
 			}, null);
 			if (board.getNumberOfPiecesOnBoard(Color.WHITE) < MIN_PIECES_ON_BOARD
 					|| board.getNumberOfPiecesOnBoard(Color.BLACK) < MIN_PIECES_ON_BOARD
-					|| board.stepCnt >= 10) {
+					|| board.stepCnt >= 30) {
 				updateUITask = new FutureTask<Void>(() -> {
 					BoardController.setMaskVisivility(true, false);
 				}, null);
@@ -69,7 +75,7 @@ public class Game {
 	public static boolean isGameOver(Board board) {
 		if (currentPhase == GamePhase.Ending && (board.getNumberOfPiecesOnBoard(Color.WHITE) < MIN_PIECES_ON_BOARD
 			|| board.getNumberOfPiecesOnBoard(Color.BLACK) < MIN_PIECES_ON_BOARD
-			|| board.stepCnt >= 10)) {
+			|| board.stepCnt >= 30)) {
 			BoardController.setMaskVisivility(false, false);
 			gameOver(board);
 			return true;
@@ -79,7 +85,7 @@ public class Game {
 
 	private static void gameOver(Board board) {
 		// Show winner/draw screen
-        if(board.stepCnt >= 10){
+        if(board.stepCnt >= 30){
 			BoardController.setGameResultVisibility(true, false, false);
         }
         else if(board.getNumberOfPiecesOnBoard(Color.WHITE) < MIN_PIECES_ON_BOARD){
@@ -90,6 +96,5 @@ public class Game {
         }
         BoardController.setMaskVisivility(true, false);
         System.out.println("Game is over~");
-		System.out.println(board.stepCnt);
 	}
 }
