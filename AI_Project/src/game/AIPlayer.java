@@ -14,16 +14,14 @@ public class AIPlayer {
 	public static final int MAX_PIECES_ON_BOARD = 9;
 	public static final int MIN_PIECES_ON_BOARD = 3;
 
-	private static Random rand = new Random();
+	private static final Color playerHuman = Color.WHITE, playerAI = Color.BLACK;
+	private static final Random rand = new Random();
 	private int selectedDepth;
-	private Color playerHuman, playerAI;
 	private Board board;
 	
 	public AIPlayer(Board board) {
 		this.board = board;
-		this.playerHuman = Color.WHITE;
-		this.playerAI = Color.BLACK;
-		selectedDepth = BoardController.getAlgorithmDepth();
+		this.selectedDepth = BoardController.getAlgorithmDepth();
 	}
 	
 	public Move getBestMove() {
@@ -154,6 +152,8 @@ public class AIPlayer {
 				}
 				board[playerSpaces.get(indexPlayerBoard)] = piece;
 			}
+			break;
+		default:
 			break;
 		}
 		return possibleMoves;

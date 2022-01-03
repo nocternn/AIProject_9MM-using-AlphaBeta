@@ -1,10 +1,14 @@
 package board;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
+
 import game.AIPlayer;
 import game.Game;
 import game.Game.GamePhase;
 import game.Move;
 import helper.EventListener;
+import javafx.application.Platform;
 import javafx.scene.paint.Color;
 
 public class Board implements EventListener {
@@ -26,9 +30,12 @@ public class Board implements EventListener {
 	public Thread blackTurnThread;
 	public int stepCnt;
 	
+	private static final Color playerHuman = Color.WHITE, playerAI = Color.BLACK;
 	private Piece[] whitePieces = new Piece[SIZE_PIECES];
 	private Piece[] blackPieces = new Piece[SIZE_PIECES];
 	private Piece[] board = new Piece[SIZE_BOARD];
+	
+	private Color currentPlayer = playerHuman;
 	
 	public Board() {
 		initBoard();
@@ -238,6 +245,8 @@ public class Board implements EventListener {
 		case Ending:
 			coef = 180;
 			break;
+		default:
+			break;
 		}
 		score += coef*R1_numPlayerMills;
 		score -= coef*R1_numOppMills;
@@ -252,6 +261,8 @@ public class Board implements EventListener {
 			break;
 		case Ending:
 			coef = 6;
+			break;
+		default:
 			break;
 		}
 		score += coef*getNumberOfPiecesOnBoard(player);
@@ -283,14 +294,8 @@ public class Board implements EventListener {
 	
 	@Override
 	public boolean movedWhitePiece(Piece movedPiece, int newPosition) {
-		// If the closest position already holds a piece then skip
-    	if (isOccupied(newPosition))
-    		return false;
-    	// In mid-game, if the closest position is not adjacent to the old position then skip
-    	else if (Game.currentPhase == GamePhase.Middle && !isAdjacent(movedPiece.indexOnBoard, newPosition))
-    		return false;
-    	else if (Game.currentPhase == GamePhase.Ending && !isAdjacent(movedPiece.indexOnBoard, newPosition)
-    			&& getNumberOfPiecesOnBoard(Color.WHITE) > Game.MIN_PIECES_ON_BOARD)
+		// Check valid move
+		if (!checkValidWhiteMove(movedPiece.getIndex(), movedPiece.indexOnBoard, newPosition))
 			return false;
 		// Delete piece at old position
 		if (movedPiece.indexOnBoard >= 0) {
@@ -299,18 +304,16 @@ public class Board implements EventListener {
 		// Add piece at new position
         movedPiece.indexOnBoard = newPosition;
 		board[newPosition] = movedPiece;
+		// Count turn
+		if(Game.currentPhase != GamePhase.Opening)
+			stepCnt++;
 		// Check for mill
-		BoardController.setMaskVisivility(true, true);
 		if (isMill(Color.WHITE, newPosition)) {
 			BoardController.millStatus.setVisible(true);
-			BoardController.bringPiecesToFront(this, Color.BLACK);
 			BoardController.markBlackPiece(this);
 			stepCnt = 0;
 			return true;
 		}
-		// Count turn
-		else if(Game.currentPhase != GamePhase.Opening)
-			stepCnt++;
 		blackTurn();
 		return true;
 	}
@@ -323,7 +326,6 @@ public class Board implements EventListener {
 		// Unmark pieces
 		BoardController.unmarkBlackPiece(this);
 		BoardController.millStatus.setVisible(false);
-		BoardController.setMaskVisivility(false, false);
 		blackTurn();
 	}
 	
@@ -335,14 +337,28 @@ public class Board implements EventListener {
 	}
 	
 	private void blackTurn() {
+		Game.updateGamePhase(this);
 		// If white won, stop the game
-		if (Game.isGameOver(this))
+		if (Game.currentPhase == Game.GamePhase.Over) {
+			Game.gameOver(this);
 			return;
+		}
 		// Else it's black's turn to move
 		BoardController.setTurnVisibility(false, true);
+		currentPlayer = playerAI;
 		blackTurnThread = new Thread(() -> {
-			moveBlackPiece();
+			try {
+				moveBlackPiece();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				e.printStackTrace();
+			}
+			currentPlayer = playerHuman;
 			Game.updateGamePhase(this);
+			if (Game.currentPhase == Game.GamePhase.Over) {
+				Game.gameOver(this);
+			}
 			endThread();
 		});
 		blackTurnThread.start();
@@ -364,26 +380,62 @@ public class Board implements EventListener {
 		}
 	}
 	
-	private void moveBlackPiece() {
+	private void moveBlackPiece() throws InterruptedException, ExecutionException {
 		// Get next move of AI
 		AIPlayer blackPlayer = new AIPlayer(new Board(this));
 		Move move = blackPlayer.getBestMove();
-		// Execute move
-		blackPieces[move.indexPiece].setCenterX(BoardController.boardPosition.get(move.destIndexOnBoard).getCenterX());
-		blackPieces[move.indexPiece].setCenterY(BoardController.boardPosition.get(move.destIndexOnBoard).getCenterY());
+		// Create UI task for later execution
+		FutureTask<Void> updateUI = new FutureTask<Void>(()->{
+			blackPieces[move.indexPiece].setCenterX(BoardController.boardPosition.get(move.destIndexOnBoard).getCenterX());
+			blackPieces[move.indexPiece].setCenterY(BoardController.boardPosition.get(move.destIndexOnBoard).getCenterY());
+			BoardController.setTurnVisibility(true, false);
+		}, null);
+		// Move piece
 		if (move.srcIndexOnBoard >= 0)
 			board[move.srcIndexOnBoard] = null;
 		blackPieces[move.indexPiece].indexOnBoard = move.destIndexOnBoard;
 		board[move.destIndexOnBoard] = blackPieces[move.indexPiece];
 		// Remove piece upon mill
 		if (move.indexRemovedPieceOnBoard != -1 && isMill(Color.BLACK, move.destIndexOnBoard)) {
-			stepCnt = 0;
 			whitePieces[move.indexRemovedPiece].delete(true, true);
 			board[move.indexRemovedPieceOnBoard] = null;
 		}
-		// Count turn
-		else if(Game.currentPhase != GamePhase.Opening)
-			stepCnt++;
-		BoardController.setTurnVisibility(true, false);
+		// Update UI
+		Platform.runLater(updateUI);
+		updateUI.get();
+	}
+
+	private boolean checkValidWhiteMove(int index, int srcIndexOnBoard, int destIndexOnBoard) {
+		// If AI is currently playing then skip
+		if (currentPlayer == playerAI)
+			return false;
+		// If there is a mill and the program is waiting for the user to delete a black piece then skip
+		if (BoardController.millStatus.isVisible())
+			return false;
+		// If the closest position already holds a piece then skip
+    	if (isOccupied(destIndexOnBoard))
+    		return false;
+    	// Check move condition depending on game phase
+    	switch (Game.currentPhase) {
+    	case Opening:
+    		// If the moved piece is already on the board then skip
+    		if (checkPieceInBoard(index, Color.WHITE))
+    			return false;
+    		break;
+    	case Middle:
+    		// If the destination position is not adjacent to the current position then skip
+    		if (!isAdjacent(srcIndexOnBoard, destIndexOnBoard))
+    			return false;
+    		break;
+    	case Ending:
+    		// If the destination position is not adjacent to the current position and there are more than 3 white pieces left then skip
+    		if (!isAdjacent(srcIndexOnBoard, destIndexOnBoard) && getNumberOfPiecesOnBoard(Color.WHITE) > Game.MIN_PIECES_ON_BOARD)
+    			return false;
+    		break;
+		default:
+			return false;
+    	}
+    	// Valid move
+    	return true;
 	}
 }

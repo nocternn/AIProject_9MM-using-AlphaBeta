@@ -109,6 +109,8 @@ public class Piece extends Circle implements Cloneable {
         				BoardController.boardPosition.get(i).setFill(Color.rgb(84, 255, 135));
     		}
     		break;
+		default:
+			break;
     	}
     }
     

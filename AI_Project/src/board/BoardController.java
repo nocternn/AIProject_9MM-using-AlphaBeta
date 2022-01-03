@@ -2,7 +2,6 @@ package board;
 
 import javafx.fxml.*;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
@@ -29,7 +28,6 @@ public class BoardController implements Initializable{
     private static Group s_whiteTurn, s_blackTurn;
     private static ProgressBar s_blackProgress;
     private static ChoiceBox<String> s_algoChoiceBox;
-    private static StackPane s_maskWhitePieces, s_maskBoard;
     
     @FXML
     private ChoiceBox<String> algoChoiceBox;
@@ -73,20 +71,6 @@ public class BoardController implements Initializable{
         millStatus.setFont(Font.font("Georgia", FontWeight.BOLD, 30));
         millStatus.setVisible(false);
         pane.getChildren().add(millStatus);
-        
-        s_maskWhitePieces = new StackPane();
-        s_maskWhitePieces.setPrefSize(300, 50);
-        s_maskWhitePieces.setLayoutX(138);
-        s_maskWhitePieces.setLayoutY(107);
-        s_maskWhitePieces.setVisible(true);
-        pane.getChildren().add(s_maskWhitePieces);
-        
-        s_maskBoard = new StackPane();
-        s_maskBoard.setPrefSize(663, 640);
-        s_maskBoard.setLayoutX(256);
-        s_maskBoard.setLayoutY(137);
-        s_maskBoard.setVisible(true);
-        pane.getChildren().add(s_maskBoard);
         
         s_draw = new Text(524, 470, "DRAW");
         s_draw.setFont(Font.font("Georgia", FontWeight.BOLD, 36));
@@ -146,17 +130,6 @@ public class BoardController implements Initializable{
         else {
             s_blackProgress.setStyle("-fx-accent: transparent;");
         }
-	}
-	
-	public static void setMaskVisivility(boolean board, boolean white) {
-		if (board)
-			s_maskBoard.toFront();
-		else
-			s_maskBoard.toBack();
-		if (white)
-			s_maskWhitePieces.toFront();
-		else
-			s_maskWhitePieces.toBack();
 	}
 	
 	public static void setGameResultVisibility(boolean draw, boolean white, boolean black) {
