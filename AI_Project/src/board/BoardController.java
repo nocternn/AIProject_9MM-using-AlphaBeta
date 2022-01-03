@@ -171,7 +171,7 @@ public class BoardController implements Initializable{
             s_blackProgress.setStyle("-fx-accent: black;");
         }
         else{
-            s_blackProgress.setStyle("-fx-accent: rgba(255,255,255,0);");
+            s_blackProgress.setStyle("-fx-accent: transparent;");
         }
     }
 	
