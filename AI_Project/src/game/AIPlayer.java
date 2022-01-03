@@ -108,7 +108,7 @@ public class AIPlayer {
 				for (int indexBoard = 0; indexBoard < Board.SIZE_BOARD; indexBoard++) {
 					if (!this.board.isOccupied(indexBoard)) {
 						board[indexBoard] = piece;
-						checkMove(player, opponent, possibleMoves, new Move(new Move(indexPiece, piece.indexOnBoard, indexBoard, -1, -1)));
+						possibleMoves.addAll(checkMove(player, opponent, new Move(indexPiece, piece.indexOnBoard, indexBoard, -1, -1)));
 						board[indexBoard] = null;
 					}
 				}
@@ -123,7 +123,7 @@ public class AIPlayer {
 					for(int indexInAdjacent = 0; indexInAdjacent < adjacent.length; indexInAdjacent++) {
 						if (!this.board.isOccupied(adjacent[indexInAdjacent])) {
 							board[adjacent[indexInAdjacent]] = piece;
-							checkMove(player, opponent, possibleMoves, new Move(piece.getIndex(), indexBoard, adjacent[indexInAdjacent], -1, -1));
+							possibleMoves.addAll(checkMove(player, opponent, new Move(piece.getIndex(), indexBoard, adjacent[indexInAdjacent], -1, -1)));
 							board[adjacent[indexInAdjacent]] = null;
 						}
 					}
@@ -149,7 +149,7 @@ public class AIPlayer {
 				// each empty space is a valid move
 				for(int indexFreeBoard = 0; indexFreeBoard < freeSpaces.size(); indexFreeBoard++) {
 					board[freeSpaces.get(indexFreeBoard)] = piece;
-					checkMove(player, opponent, possibleMoves, new Move(piece.getIndex(), piece.indexOnBoard, freeSpaces.get(indexFreeBoard), -1, -1));
+					possibleMoves.addAll(checkMove(player, opponent, new Move(piece.getIndex(), piece.indexOnBoard, freeSpaces.get(indexFreeBoard), -1, -1)));
 					board[freeSpaces.get(indexFreeBoard)] = null;
 				}
 				board[playerSpaces.get(indexPlayerBoard)] = piece;
@@ -159,7 +159,8 @@ public class AIPlayer {
 		return possibleMoves;
 	}
 
-	private void checkMove(Color player, Color opponent, ArrayList<Move> moves, Move move) {
+	private ArrayList<Move> checkMove(Color player, Color opponent, Move move) {
+		ArrayList<Move> moves = new ArrayList<Move>();
 		boolean madeMill = false;
 		Piece[] board = this.board.getBoard();
 
@@ -180,6 +181,7 @@ public class AIPlayer {
 
 		if(!madeMill) // don't add repeated moves
 			moves.add(new Move(move));
+		return moves;
 	}
 	
 	private class HeuristicComparator implements Comparator<Move> {

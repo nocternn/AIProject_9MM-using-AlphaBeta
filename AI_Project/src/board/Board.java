@@ -21,9 +21,10 @@ public class Board implements EventListener {
 	public static int SIZE_MILL = 3;
 	public static int SIZE_PIECES = 9;
 	public static int SIZE_BOARD = 24;
-	public static int stepCnt=0;
+	
 	
 	public Thread blackTurnThread;
+	public int stepCnt;
 	
 	private Piece[] whitePieces = new Piece[SIZE_PIECES];
 	private Piece[] blackPieces = new Piece[SIZE_PIECES];
@@ -298,9 +299,6 @@ public class Board implements EventListener {
 		// Add piece at new position
         movedPiece.indexOnBoard = newPosition;
 		board[newPosition] = movedPiece;
-		// Count turn
-		if(Game.currentPhase != GamePhase.Opening)
-			stepCnt++;
 		// Check for mill
 		BoardController.setMaskVisivility(true, true);
 		if (isMill(Color.WHITE, newPosition)) {
@@ -310,6 +308,9 @@ public class Board implements EventListener {
 			stepCnt = 0;
 			return true;
 		}
+		// Count turn
+		else if(Game.currentPhase != GamePhase.Opening)
+			stepCnt++;
 		blackTurn();
 		return true;
 	}
@@ -349,6 +350,7 @@ public class Board implements EventListener {
 	
 	private void initBoard() {
 		// Initialize black pieces.
+		stepCnt = 0;
 		int blackIndex = 0;
 		for (double centerX = 821.0; centerX < 821.0+14.0*9; centerX += 14.0) {
 			blackPieces[blackIndex] = new Piece(Color.BLACK, centerX, 118, Color.WHITESMOKE, blackIndex, this);
@@ -375,9 +377,13 @@ public class Board implements EventListener {
 		board[move.destIndexOnBoard] = blackPieces[move.indexPiece];
 		// Remove piece upon mill
 		if (move.indexRemovedPieceOnBoard != -1 && isMill(Color.BLACK, move.destIndexOnBoard)) {
+			stepCnt = 0;
 			whitePieces[move.indexRemovedPiece].delete(true, true);
 			board[move.indexRemovedPieceOnBoard] = null;
 		}
+		// Count turn
+		else if(Game.currentPhase != GamePhase.Opening)
+			stepCnt++;
 		BoardController.setTurnVisibility(true, false);
 	}
 }

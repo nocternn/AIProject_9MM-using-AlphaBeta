@@ -11,18 +11,9 @@ import javafx.scene.paint.Color;
 public class Game {
 	public enum GamePhase {Opening, Middle, Ending};
 	public static final int MIN_PIECES_ON_BOARD = 3;
-	public static int turnCounter = 0; //Count playing turns
 	public static GamePhase currentPhase = GamePhase.Opening;
 	
 	private static FutureTask<Void> updateUITask;
-	
-	public static int getTurnCounter() {
-		return turnCounter;
-	}
-
-	public static void setTurnCounter(int turnCounter) {
-		Game.turnCounter = turnCounter;
-	}
 	
 	public static void updateGamePhase(Board board) {
 		switch (currentPhase) {
@@ -51,7 +42,7 @@ public class Game {
 			}, null);
 			if (board.getNumberOfPiecesOnBoard(Color.WHITE) < MIN_PIECES_ON_BOARD
 					|| board.getNumberOfPiecesOnBoard(Color.BLACK) < MIN_PIECES_ON_BOARD
-					|| Board.stepCnt >= 10) {
+					|| board.stepCnt >= 10) {
 				updateUITask = new FutureTask<Void>(() -> {
 					BoardController.setMaskVisivility(true, false);
 				}, null);
@@ -78,7 +69,7 @@ public class Game {
 	public static boolean isGameOver(Board board) {
 		if (currentPhase == GamePhase.Ending && (board.getNumberOfPiecesOnBoard(Color.WHITE) < MIN_PIECES_ON_BOARD
 			|| board.getNumberOfPiecesOnBoard(Color.BLACK) < MIN_PIECES_ON_BOARD
-			|| Board.stepCnt >= 10)) {
+			|| board.stepCnt >= 10)) {
 			BoardController.setMaskVisivility(false, false);
 			gameOver(board);
 			return true;
@@ -88,7 +79,7 @@ public class Game {
 
 	private static void gameOver(Board board) {
 		// Show winner/draw screen
-        if(Board.stepCnt >= 10){
+        if(board.stepCnt >= 10){
 			BoardController.setGameResultVisibility(true, false, false);
         }
         else if(board.getNumberOfPiecesOnBoard(Color.WHITE) < MIN_PIECES_ON_BOARD){
@@ -97,6 +88,8 @@ public class Game {
         else{
 			BoardController.setGameResultVisibility(false, true, false);
         }
+        BoardController.setMaskVisivility(true, false);
         System.out.println("Game is over~");
+		System.out.println(board.stepCnt);
 	}
 }

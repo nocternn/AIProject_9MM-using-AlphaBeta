@@ -160,6 +160,7 @@ public class BoardController implements Initializable{
 	}
 	
 	public static void setGameResultVisibility(boolean draw, boolean white, boolean black) {
+		millStatus.setVisible(false);
 		s_draw.setVisible(draw);
 		s_whiteWin.setVisible(white);
 		s_blackWin.setVisible(black);
@@ -170,7 +171,7 @@ public class BoardController implements Initializable{
             s_blackProgress.setStyle("-fx-accent: black;");
         }
         else{
-            s_blackProgress.setStyle("-fx-accent: rgba(0,0,0,0);");
+            s_blackProgress.setStyle("-fx-accent: rgba(255,255,255,0);");
         }
     }
 	
