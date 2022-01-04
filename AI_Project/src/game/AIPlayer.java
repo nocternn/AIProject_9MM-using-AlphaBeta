@@ -95,7 +95,7 @@ public class AIPlayer {
 		switch (Game.currentPhase) {
 		case Opening:
 			for (int indexPiece = 0; indexPiece < Board.SIZE_PIECES; indexPiece++) {
-				// If piece is no longer playable then skip
+				// If piece is not playable then skip
 				if (!this.board.isActive(indexPiece, player))
 					continue;
 				// If piece is already on the board then skip
@@ -168,19 +168,33 @@ public class AIPlayer {
 			if (this.board.isMill(player, row[0])) { // made a mill - select piece to remove
 				madeMill = true;
 
+				boolean erased = false;
+				// Try to erase a non-mill piece
 				for (int indexBoard = 0; indexBoard < Board.SIZE_BOARD; indexBoard++) {
 					if ((!this.board.isMill(opponent, indexBoard)) && (board[indexBoard] != null) && (board[indexBoard].getPlayer() == opponent)) {
 						move.indexRemovedPiece = board[indexBoard].getIndex();
 						move.indexRemovedPieceOnBoard = indexBoard;
 						// add a move for each piece that can be removed, this way it will check what's the best one to remove
 						moves.add(new Move(move));
+						erased = true;
 					}
 				}
-			}				
+				// If opponent only has mills on board then erase any of his pieces
+				if (!erased) {
+					for (int indexBoard = 0; indexBoard < Board.SIZE_BOARD; indexBoard++) {
+						if ((board[indexBoard] != null) && (board[indexBoard].getPlayer() == opponent)) {
+							move.indexRemovedPiece = board[indexBoard].getIndex();
+							move.indexRemovedPieceOnBoard = indexBoard;
+							// add a move for each piece that can be removed, this way it will check what's the best one to remove
+							moves.add(new Move(move));
+						}
+					}
+				}
+			}
 		}
 
 		if(!madeMill) // don't add repeated moves
-			moves.add(new Move(move));
+			moves.add(move);
 		return moves;
 	}
 	

@@ -116,10 +116,10 @@ public class Board implements EventListener {
 		return false;
 	}
 
-	public boolean checkPieceInBoard(int indexPiece, Color player) {
-		if (player == Color.WHITE && whitePieces[indexPiece].indexOnBoard == -1)
+	public boolean checkPieceInBoard(int position, Color player) {
+		if (player == Color.WHITE && whitePieces[position].indexOnBoard == -1)
 			return false;
-		if (player == Color.BLACK && blackPieces[indexPiece].indexOnBoard == -1)
+		if (player == Color.BLACK && blackPieces[position].indexOnBoard == -1)
 			return false;
 		return true;
 	}
