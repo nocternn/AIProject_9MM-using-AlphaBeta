@@ -54,7 +54,7 @@ public class AIPlayer {
 		if (depth == 0) {
 			return board.evaluate(player, opponent);
 		} else if ((possibleMoves = getPossibleMoves(player, opponent)).isEmpty()) {
-			if(player == playerHuman) {
+			if(player == playerAI) {
 				return Integer.MIN_VALUE;
 			} else {
 				return Integer.MAX_VALUE;
@@ -62,7 +62,7 @@ public class AIPlayer {
 		} else {
 			for (Move move : possibleMoves) {
 				board.applyMove(move, player);
-				if (player == playerHuman) {  // maximizing player
+				if (player == playerAI) {  // maximizing player
 					alpha = Math.max(alpha, alphaBeta(depth - 1, alpha, beta, opponent, player));
 					if (beta <= alpha) {
 						board.undoMove(move, player);
@@ -79,7 +79,7 @@ public class AIPlayer {
 				board.undoMove(move, player);
 			}
 
-			if(player == playerHuman) {
+			if(player == playerAI) {
 				return alpha;
 			} else {
 				return beta;
