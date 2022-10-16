@@ -7,13 +7,19 @@ This is a group project for Artificial Intelligence course of Hanoi University o
 - Nguyen Phuong Thao
 - Dang Yen Trang
 
-## Installation
+## **Installation**
 
 ***Java version 15 or higher*** is required to run the program
 
-Download file *game.jar* and run it with Java
+***JavaFX SDK*** is required to run the program
 
-## Gameplay Instructions
+Add path to JavaFX *lib* folder to PATH of the OS:
+`export PATH_TO_FX=path/to/java-fx-sdk/lib`
+
+Download file *game.jar* and run it with Java:
+`java --module-path $PATH_TO_FX --add-modules javafx.graphics,javafx.fxml,javafx.controls -jar game.jar`
+
+## **Gameplay Instructions**
 
 Rules for the game are introduced here: [Nine Men's Morris Game Rules](https://gathertogethergames.com/nine-mens-morris)
 
